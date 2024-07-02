@@ -4,7 +4,7 @@
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
   "version": "0.0.0",
-  "permissions": ["alarms", "cookies", "notifications", "storage"],
+  "permissions": ["alarms", "cookies", "storage"],
   "host_permissions": ["*://*.twitch.tv/*"],
   "icons": {
     "48": "icon-purple-48.png",
