@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.0.1](https://github.com/Seldszar/Coco/compare/v1.0.0...v1.0.1) (2024-07-04)
+
+
+### Bug Fixes
+
+* alarm & badge update ([861cd09](https://github.com/Seldszar/Coco/commit/861cd0961e9f5f6bb9ab872f2ce441db70d29def))
+* remove notification click handler ([7f68e49](https://github.com/Seldszar/Coco/commit/7f68e49900623548a398d60c392d4e9b4fe574c8))
+
 ## 1.0.0 (2024-07-02)
 
 
