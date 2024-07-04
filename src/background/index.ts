@@ -163,4 +163,3 @@ browser.runtime.onInstalled.addListener(async (details) => {
 });
 
 browser.action.onClicked.addListener(openBountyBoard);
-browser.notifications.onClicked.addListener(openBountyBoard);
