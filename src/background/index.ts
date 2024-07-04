@@ -132,15 +132,6 @@ browser.alarms.onAlarm.addListener(async () => {
     };
   } catch {} // eslint-disable-line no-empty
 
-  await browser.storage.session.set(items);
-});
-
-browser.storage.onChanged.addListener(async () => {
-  const items = await browser.storage.session.get({
-    online: false,
-    count: 0,
-  });
-
   const getIconPath = (size: number) =>
     browser.runtime.getURL(`icon-${items.online ? "purple" : "gray"}-${size}.png`);
 
@@ -160,10 +151,16 @@ browser.storage.onChanged.addListener(async () => {
   ]);
 });
 
+browser.runtime.onInstalled.addListener(async (details) => {
+  if (details.reason !== "install") {
+    return;
+  }
+
+  browser.alarms.create({
+    periodInMinutes: 5,
+    when: 0,
+  });
+});
+
 browser.action.onClicked.addListener(openBountyBoard);
 browser.notifications.onClicked.addListener(openBountyBoard);
-
-browser.alarms.create({
-  periodInMinutes: 5,
-  when: 0,
-});
