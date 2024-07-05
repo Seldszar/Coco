@@ -151,10 +151,8 @@ browser.alarms.onAlarm.addListener(async () => {
   ]);
 });
 
-browser.runtime.onInstalled.addListener(async (details) => {
-  if (details.reason !== "install") {
-    return;
-  }
+browser.runtime.onInstalled.addListener(async () => {
+  await browser.alarms.clearAll();
 
   browser.alarms.create({
     periodInMinutes: 5,
