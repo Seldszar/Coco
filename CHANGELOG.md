@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.0.2](https://github.com/Seldszar/Coco/compare/v1.0.1...v1.0.2) (2024-07-05)
+
+
+### Bug Fixes
+
+* alarm setup ([c9a58a1](https://github.com/Seldszar/Coco/commit/c9a58a18f0ff2a9d76faab451fb8d0f16a4d2b77))
+
 ## [1.0.1](https://github.com/Seldszar/Coco/compare/v1.0.0...v1.0.1) (2024-07-04)
 
 
