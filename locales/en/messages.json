@@ -4,5 +4,8 @@
   },
   "extensionName": {
     "message": "Coco: Twitch Bounty Companion"
+  },
+  "notificationTitle_newBountyAvailable": {
+    "message": "New Bounty Available"
   }
 }

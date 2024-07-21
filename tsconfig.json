@@ -6,16 +6,14 @@
     "moduleResolution": "bundler",
     "strictNullChecks": true,
     "esModuleInterop": true,
+    "noImplicitAny": false,
     "skipLibCheck": true,
+    "jsxImportSource": "react",
+    "jsx": "react-jsx",
     "baseUrl": ".",
     "paths": {
-      "~/*": [
-        "src/*"
-      ]
+      "~/*": ["src/*"]
     }
   },
-
-  "include": [
-    "src"
-  ]
+  "exclude": ["node_modules"]
 }

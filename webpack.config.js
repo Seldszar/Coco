@@ -4,7 +4,11 @@ const path = require("node:path");
 const { ProvidePlugin } = require("webpack");
 const { merge } = require("webpack-merge");
 
+const { EntryWrapperPlugin } = require("@seldszar/yael");
+
 const CopyWebpackPlugin = require("copy-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 const localeReplacements = [
   {
@@ -68,7 +72,7 @@ module.exports = (env, argv) => {
           {
             from: "**/*",
             context: "locales",
-            filter: (resourcePath) => {
+            filter(resourcePath) {
               try {
                 const data = JSON.parse(fs.readFileSync(resourcePath, "utf-8"));
 
@@ -79,7 +83,7 @@ module.exports = (env, argv) => {
 
               return true;
             },
-            to: (pathData) => {
+            to(pathData) {
               const relativePath = path
                 .relative(pathData.context, pathData.absoluteFilename)
                 .replace(/\\/g, "/");
@@ -106,6 +110,45 @@ module.exports = (env, argv) => {
       target: "webworker",
       entry: {
         background: "./src/background/index.ts",
+      },
+    }),
+    merge(commonConfig, {
+      target: "web",
+      entry: {
+        popup: "./src/browser/popup/main.tsx",
+      },
+      module: {
+        rules: [
+          {
+            test: /\.css$/,
+            use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
+          },
+        ],
+      },
+      optimization: {
+        splitChunks: {
+          name: "commons",
+          chunks: "all",
+        },
+      },
+      plugins: [
+        new MiniCssExtractPlugin(),
+        new EntryWrapperPlugin({
+          template: "./src/browser/entry-template.tsx",
+          test: /\.tsx$/,
+        }),
+        new HtmlWebpackPlugin({
+          template: "./src/browser/entry-template.html",
+          filename: "popup.html",
+          chunks: ["popup"],
+        }),
+      ],
+      resolve: {
+        alias: {
+          react: "preact/compat",
+          "react-dom": "preact/compat",
+          "react/jsx-runtime": "preact/jsx-runtime",
+        },
       },
     }),
   ];

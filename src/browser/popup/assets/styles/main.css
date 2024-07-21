@@ -1,0 +1,7 @@
+@layer reset, base, tokens, recipes, utilities;
+
+@font-face {
+  src: url("../fonts/PlusJakartaSans.ttf");
+  font-family: "Plus Jakarta Sans";
+  font-style: normal;
+}

@@ -4,7 +4,7 @@
   "description": "__MSG_extensionDescription__",
   "default_locale": "en",
   "version": "0.0.0",
-  "permissions": ["alarms", "cookies", "storage"],
+  "permissions": ["alarms", "cookies", "notifications", "storage"],
   "host_permissions": ["*://*.twitch.tv/*"],
   "icons": {
     "48": "icon-purple-48.png",
@@ -15,6 +15,7 @@
   },
   "action": {
     "default_title": "__MSG_extensionName__",
+    "default_popup": "popup.html",
     "default_icon": {
       "16": "icon-gray-16.png",
       "32": "icon-gray-32.png"

@@ -6,3 +6,7 @@ dist
 
 # Log files
 *.log
+
+## Panda
+src/browser/styled-system
+src/browser/styled-system-studio
