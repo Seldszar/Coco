@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.1.0](https://github.com/Seldszar/Coco/compare/v1.0.2...v1.1.0) (2024-07-21)
+
+
+### Features
+
+* popup & notifications ([7212474](https://github.com/Seldszar/Coco/commit/721247420e6085cebdc4e4cb5721b9166ce80a4c))
+
+
+### Bug Fixes
+
+* default action icon ([44cc388](https://github.com/Seldszar/Coco/commit/44cc388a1e25a778bdaf5f1117c6a36dd4313d4c))
+
 ## [1.0.2](https://github.com/Seldszar/Coco/compare/v1.0.1...v1.0.2) (2024-07-05)
 
 
