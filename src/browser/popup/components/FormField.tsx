@@ -28,7 +28,7 @@ export function FormField(props: FormFieldProps) {
 
   return (
     <label>
-      <div className={styles.header}>Theme</div>
+      <div className={styles.header}>{props.header}</div>
       {props.children}
     </label>
   );
