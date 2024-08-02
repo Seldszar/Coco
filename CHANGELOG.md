@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.1](https://github.com/Seldszar/Coco/compare/v1.1.0...v1.1.1) (2024-08-02)
+
+
+### Bug Fixes
+
+* form field header ([edf0898](https://github.com/Seldszar/Coco/commit/edf0898c77f9eaa63e6e78488854b887da391370))
+
 ## [1.1.0](https://github.com/Seldszar/Coco/compare/v1.0.2...v1.1.0) (2024-07-21)
 
 
