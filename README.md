@@ -2,6 +2,15 @@
 
 Coco aims to help Twitch content creators by keeping them up to date with the bounties available on their Bounty Board.
 
+## Install
+
+[link-chrome]: https://chromewebstore.google.com/detail/coco-twitch-bounty-compan/majagfjneookifocjglbdkekhbajfikl 'Version published on Chrome Web Store'
+[link-firefox]: https://addons.mozilla.org/en-US/firefox/addon/coco-twitch-bounty-companion/ 'Version published on Mozilla Add-ons'
+
+[<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/chrome/chrome.svg" width="48" alt="Chrome" valign="middle">][link-chrome] [<img valign="middle" src="https://img.shields.io/chrome-web-store/v/majagfjneookifocjglbdkekhbajfikl.svg?label=%20">][link-chrome] also compatible with [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/edge/edge.svg" width="24" alt="Edge" valign="middle">][link-chrome] [<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/opera/opera.svg" width="24" alt="Opera" valign="middle">][link-chrome]
+
+[<img src="https://raw.githubusercontent.com/alrra/browser-logos/main/src/firefox/firefox.svg" width="48" alt="Firefox" valign="middle">][link-firefox] [<img valign="middle" src="https://img.shields.io/amo/v/coco-twitch-bounty-companion.svg?label=%20">][link-firefox]
+
 ## Build
 
 3. Install the dependencies (`npm install`) and build for the desired platform:
