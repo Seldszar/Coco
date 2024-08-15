@@ -1,0 +1,21 @@
+query Coco_BountiesPage($login: String!, $status: String!) {
+  user(login: $login) {
+    bountiesPage(status: $status, first: 20) {
+      edges {
+        node {
+          id
+          campaign {
+            title
+            boxArtURL
+            game {
+              boxArtURL(width: 85, height: 113)
+            }
+          }
+          status
+          expiresAt
+          payoutCents
+        }
+      }
+    }
+  }
+}

@@ -1,7 +1,7 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const { ProvidePlugin } = require("webpack");
+const { EnvironmentPlugin, ProvidePlugin } = require("webpack");
 const { merge } = require("webpack-merge");
 
 const { EntryWrapperPlugin } = require("@seldszar/yael");
@@ -35,6 +35,11 @@ module.exports = (env, argv) => {
     module: {
       rules: [
         {
+          test: /\.gql$/,
+          exclude: /node_modules/,
+          loader: path.resolve(".webpack/loaders/graphql"),
+        },
+        {
           test: /\.tsx?$/,
           exclude: /node_modules/,
           use: {
@@ -56,6 +61,9 @@ module.exports = (env, argv) => {
       ],
     },
     plugins: [
+      new EnvironmentPlugin({
+        TWITCH_CLIENT_ID: "kimne78kx3ncx6brgo4mv6wki5h1ko",
+      }),
       new ProvidePlugin({
         browser: "webextension-polyfill",
       }),
