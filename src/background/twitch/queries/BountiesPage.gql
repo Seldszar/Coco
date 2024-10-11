@@ -5,6 +5,7 @@ query Coco_BountiesPage($login: String!, $status: String!) {
         node {
           id
           campaign {
+            id
             title
             boxArtURL
             game {

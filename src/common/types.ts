@@ -1,6 +1,7 @@
 export interface BountyCampaign {
-  boxArtUrl: string;
+  id: string;
   title: string;
+  boxArtUrl: string;
 }
 
 export interface Bounty {

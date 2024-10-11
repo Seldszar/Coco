@@ -65,8 +65,9 @@ async function fetchBounties() {
         payout: node.payoutCents / 100,
 
         campaign: {
-          boxArtUrl: campaign.boxArtURL || campaign.game.boxArtURL,
+          id: campaign.id,
           title: campaign.title,
+          boxArtUrl: campaign.boxArtURL || campaign.game.boxArtURL,
         },
       };
     });
@@ -148,7 +149,8 @@ browser.storage.onChanged.addListener(async (changes) => {
   if (settings.notifications) {
     const newBounties = newValue.filter(
       (newItem) =>
-        newItem.status === "available" && oldValue.every((oldItem) => newItem.id !== oldItem.id),
+        newItem.status === "available" &&
+        oldValue.every((oldItem) => newItem.campaign.id !== oldItem.campaign.id),
     );
 
     if (newBounties.length === 0) {
