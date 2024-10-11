@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.2.0](https://github.com/Seldszar/Coco/compare/v1.1.0...v1.2.0) (2024-10-11)
+
+
+### Features
+
+* refactor graphql client ([9debf91](https://github.com/Seldszar/Coco/commit/9debf918bf44e29578ab5522de8a1868959648e5))
+
+
+### Bug Fixes
+
+* bounty notifications ([e4b73fc](https://github.com/Seldszar/Coco/commit/e4b73fca64f19e5224b12d4251c8d061ebb99290))
+* form field header ([edf0898](https://github.com/Seldszar/Coco/commit/edf0898c77f9eaa63e6e78488854b887da391370))
+* graphql query ([165838f](https://github.com/Seldszar/Coco/commit/165838f3127d259988dc4815d9fb400eb1a9658d))
+
 ## [1.1.0](https://github.com/Seldszar/Coco/compare/v1.0.2...v1.1.0) (2024-07-21)
 
 
