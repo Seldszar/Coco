@@ -59,7 +59,7 @@ async function executeOperations(operations: QueryOperation[], cachedResults: Qu
   const results = await request<QueryResult[]>("gql", {
     method: "POST",
     body: JSON.stringify(
-      operations.map(({ retry, query, ...rest }) => (retry ? { query, ...rest } : rest)),
+      operations.map(({ retry, input: { query, ...rest } }) => (retry ? { query, ...rest } : rest)),
     ),
     headers: {
       "Client-Integrity": await getIntegrityToken(),
@@ -91,7 +91,7 @@ async function executeOperations(operations: QueryOperation[], cachedResults: Qu
 
 async function query(input: QueryInput[]) {
   return executeOperations(
-    input.map((input, index) => ({ ...input, index })),
+    input.map((input, index) => ({ input, index })),
     [],
   );
 }

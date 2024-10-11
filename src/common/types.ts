@@ -25,9 +25,11 @@ export interface QueryInput {
   };
 }
 
-export interface QueryOperation extends QueryInput {
-  retry?: boolean;
+export interface QueryOperation {
+  input: QueryInput;
+
   index: number;
+  retry?: boolean;
 }
 
 export interface QueryResult<T = any> {
