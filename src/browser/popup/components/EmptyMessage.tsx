@@ -10,8 +10,7 @@ const recipe = sva({
       display: "flex",
       flexDir: "column",
       gap: 2,
-      px: 4,
-      py: 8,
+      p: 8,
     },
 
     icon: {

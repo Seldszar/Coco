@@ -64,6 +64,10 @@ export function useSettings() {
   });
 }
 
+export function useBountyBoardStatus() {
+  return useStorage("session", "status", "NONE");
+}
+
 export function useBounties() {
   return useStorage("session", "bounties", new Array<Bounty>());
 }
