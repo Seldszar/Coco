@@ -18,27 +18,21 @@ async function openBountyBoard() {
 }
 
 async function fetchStatus() {
-  let { status } = await browser.storage.session.get({
-    status: null,
-  });
+  const [{ data }] = await getBountyBoardSettings();
 
-  if (status == null) {
-    const [{ data }] = await getBountyBoardSettings();
-
-    if (data == null) {
-      return "NONE";
-    }
-
-    const {
-      user: { bountyBoardSettings },
-    } = data;
-
-    status = bountyBoardSettings.status;
-
-    browser.storage.session.set({
-      status,
-    });
+  if (data == null) {
+    return "NONE";
   }
+
+  const {
+    user: {
+      bountyBoardSettings: { status },
+    },
+  } = data;
+
+  browser.storage.session.set({
+    status,
+  });
 
   return status;
 }
