@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.2.1](https://github.com/Seldszar/Coco/compare/v1.2.0...v1.2.1) (2024-10-20)
+
+
+### Bug Fixes
+
+* bounty board access message ([1d7c951](https://github.com/Seldszar/Coco/commit/1d7c951063992775b20732cef5b7cfce8e89b8c7))
+* initial alarm ([8a86a92](https://github.com/Seldszar/Coco/commit/8a86a926d201c013c49d9bc61cca7a689cc0eb83))
+* remove bounty board status caching ([9f71881](https://github.com/Seldszar/Coco/commit/9f71881368ba360e7a5750287a8bb66c09e30117))
+
 ## [1.2.0](https://github.com/Seldszar/Coco/compare/v1.1.0...v1.2.0) (2024-10-11)
 
 
