@@ -115,7 +115,7 @@ browser.runtime.onInstalled.addListener(async () => {
 
   browser.alarms.create({
     periodInMinutes: 5,
-    when: 0,
+    when: Date.now(),
   });
 });
 
