@@ -5,6 +5,7 @@ import { useBounties, useBountyBoardStatus } from "~/browser/common/hooks";
 import { Box } from "~/browser/styled-system/jsx";
 
 import { BountyCard } from "../components/BountyCard";
+import { Button } from "../components/Button";
 import { EmptyMessage } from "../components/EmptyMessage";
 
 export function Bounties(props: RouteComponentProps) {
@@ -17,6 +18,11 @@ export function Bounties(props: RouteComponentProps) {
     () => bounties.filter((bounty) => bounty.status === params.status),
     [bounties, params.status],
   );
+
+  const refreshBounties = () =>
+    browser.runtime.sendMessage({
+      type: "refreshBounties",
+    });
 
   if (status === "ACCEPTED") {
     if (filteredBounties.length === 0) {
@@ -32,5 +38,10 @@ export function Bounties(props: RouteComponentProps) {
     );
   }
 
-  return <EmptyMessage>It seems you don't have access to the Bounty Board</EmptyMessage>;
+  return (
+    <EmptyMessage>
+      <Box pb={3}>It seems you don't have access to the Bounty Board</Box>
+      <Button onClick={() => refreshBounties()}>Retry</Button>
+    </EmptyMessage>
+  );
 }

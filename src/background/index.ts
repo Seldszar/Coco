@@ -68,7 +68,7 @@ async function fetchBounties() {
   });
 }
 
-browser.alarms.onAlarm.addListener(async () => {
+async function refreshBounties() {
   let bounties = new Array<Bounty>();
   let active = false;
 
@@ -102,21 +102,27 @@ browser.alarms.onAlarm.addListener(async () => {
       32: getIconUrl(color, 32),
     },
   });
-});
-
-browser.runtime.onInstalled.addListener(async () => {
-  await browser.alarms.clearAll();
 
   browser.alarms.create({
-    periodInMinutes: 5,
-    when: Date.now(),
+    delayInMinutes: 5,
   });
-});
+}
 
-browser.runtime.onMessage.addListener((message) => {
+async function checkAlarm() {
+  if (await browser.alarms.get()) {
+    return;
+  }
+
+  refreshBounties();
+}
+
+browser.runtime.onMessage.addListener(async (message) => {
   switch (message.type) {
     case "openBountyBoard":
       return openBountyBoard();
+
+    case "refreshBounties":
+      return refreshBounties();
   }
 
   throw new RangeError("Unknown message type");
@@ -162,5 +168,9 @@ browser.storage.onChanged.addListener(async (changes) => {
   }
 });
 
+browser.alarms.onAlarm.addListener(refreshBounties);
+
 browser.action.onClicked.addListener(openBountyBoard);
 browser.notifications.onClicked.addListener(openBountyBoard);
+
+checkAlarm();

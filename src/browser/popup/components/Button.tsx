@@ -4,7 +4,8 @@ export const Button = styled("button", {
   base: {
     cursor: "pointer",
     fontWeight: "medium",
-    p: 2.5,
+    px: 5,
+    py: 2.5,
     rounded: "md",
   },
   variants: {
