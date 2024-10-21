@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.2.2](https://github.com/Seldszar/Coco/compare/v1.2.1...v1.2.2) (2024-10-21)
+
+
+### Bug Fixes
+
+* alarm check & manual bounty refresh ([6f9bfcc](https://github.com/Seldszar/Coco/commit/6f9bfcca1f6e3eb5e294ef1f8c2129d27fc4605f))
+* keep menu open when navigating ([7f88089](https://github.com/Seldszar/Coco/commit/7f88089bc7af4123cae61cb990f28fab2d6ac63e))
+
 ## [1.2.1](https://github.com/Seldszar/Coco/compare/v1.2.0...v1.2.1) (2024-10-20)
 
 
