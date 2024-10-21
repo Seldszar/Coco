@@ -5,7 +5,6 @@ import {
   IconHeart,
   IconSettings,
 } from "@tabler/icons-react";
-import { useLayoutEffect } from "react";
 import { useLocation } from "wouter";
 
 import { countBounties } from "~/common/helpers";
@@ -79,7 +78,7 @@ export function Header(props: HeaderProps) {
   const [bounties] = useBounties();
 
   const [isMenuOpen, toggleMenu] = useToggle(false);
-  const [location, navigate] = useLocation();
+  const [, navigate] = useLocation();
 
   const classes = recipe({
     isMenuOpen,
@@ -89,8 +88,6 @@ export function Header(props: HeaderProps) {
     browser.runtime.sendMessage({
       type: "openBountyBoard",
     });
-
-  useLayoutEffect(() => toggleMenu(false), [location]);
 
   return (
     <header className={classes.root}>
@@ -119,7 +116,7 @@ export function Header(props: HeaderProps) {
       {isMenuOpen && (
         <>
           <Grid pt={3} px={4}>
-            <Button color="purple" onClick={openBountyBoard}>
+            <Button color="purple" onClick={() => openBountyBoard()}>
               Open Bounty Board
             </Button>
           </Grid>
