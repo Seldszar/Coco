@@ -42,6 +42,10 @@ const recipe = sva({
         root: {
           bg: { base: "neutral.300", _dark: "neutral.700" },
         },
+
+        indicator: {
+          borderWidth: 7,
+        },
       },
     },
   },
@@ -73,10 +77,7 @@ export function Radio(props: RadioProps) {
         className={cx("peer", styles.input)}
       />
 
-      <Circle className={styles.indicator} size="20px">
-        {props.checked ? <Circle bg={{ base: "black", _dark: "white" }} size={3} /> : null}
-      </Circle>
-
+      <Circle className={styles.indicator} size="20px" />
       <div className={styles.inner}>{props.children}</div>
     </label>
   );
