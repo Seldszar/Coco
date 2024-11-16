@@ -168,6 +168,8 @@ browser.storage.onChanged.addListener(async (changes) => {
   }
 });
 
+browser.runtime.onInstalled.addListener(refreshBounties);
+browser.runtime.onStartup.addListener(refreshBounties);
 browser.alarms.onAlarm.addListener(refreshBounties);
 
 browser.action.onClicked.addListener(openBountyBoard);
