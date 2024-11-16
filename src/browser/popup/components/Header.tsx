@@ -105,6 +105,10 @@ export function Header(props: HeaderProps) {
               href: "/bounties/live",
               title: "In Queue",
             },
+            {
+              href: "/bounties/completed",
+              title: "Completed",
+            },
           ]}
         />
 

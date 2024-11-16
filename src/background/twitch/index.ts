@@ -126,6 +126,14 @@ export async function getBounties() {
       ...BountiesPage,
 
       variables: {
+        status: "COMPLETED",
+        login,
+      },
+    },
+    {
+      ...BountiesPage,
+
+      variables: {
         status: "LIVE",
         login,
       },
