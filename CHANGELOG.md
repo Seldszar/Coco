@@ -1,5 +1,18 @@
 # Changelog
 
+## [1.3.0](https://github.com/Seldszar/Coco/compare/v1.2.2...v1.3.0) (2024-11-16)
+
+
+### Features
+
+* add completed bounties ([4435375](https://github.com/Seldszar/Coco/commit/4435375965bbe1595d2d822926663727b4a6a5f0))
+
+
+### Bug Fixes
+
+* ensure bounty refresh ([1e7048f](https://github.com/Seldszar/Coco/commit/1e7048f7a9a1e2acafebe6363219af2dbc8f8d4b))
+* radio button ([49c4fef](https://github.com/Seldszar/Coco/commit/49c4fef3bc6ea85f78166f6930521b93be33ddb5))
+
 ## [1.2.2](https://github.com/Seldszar/Coco/compare/v1.2.1...v1.2.2) (2024-10-21)
 
 
