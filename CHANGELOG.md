@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.3.2](https://github.com/Seldszar/Coco/compare/v1.3.1...v1.3.2) (2024-12-08)
+
+
+### Bug Fixes
+
+* bounty card details ([94d0ffb](https://github.com/Seldszar/Coco/commit/94d0ffbd2170e7d9f5d8b0780511e2ae5ca87609))
+
 ## [1.3.1](https://github.com/Seldszar/Coco/compare/v1.3.0...v1.3.1) (2024-12-08)
 
 
