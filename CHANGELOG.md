@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.3.1](https://github.com/Seldszar/Coco/compare/v1.3.0...v1.3.1) (2024-12-08)
+
+
+### Bug Fixes
+
+* payout ([820862c](https://github.com/Seldszar/Coco/commit/820862cbb73f08624c69b461ec7c555ee86bfc60))
+* tab list overflow ([6857a1b](https://github.com/Seldszar/Coco/commit/6857a1b16aed935519167a87f4878ea7421bed6f))
+
 ## [1.3.0](https://github.com/Seldszar/Coco/compare/v1.2.2...v1.3.0) (2024-11-16)
 
 
