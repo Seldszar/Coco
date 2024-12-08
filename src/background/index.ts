@@ -54,9 +54,28 @@ async function fetchBounties() {
 
       return {
         id: node.id,
-        status: node.status.toLowerCase(),
-        expiresAt: Date.parse(node.expiresAt),
-        payout: (node.status === "COMPLETED" ? node.payoutCents : node.maximumPayoutCents) / 100,
+        status: node.status,
+
+        get date() {
+          switch (node.status) {
+            case "COMPLETED":
+              return Date.parse(node.trackingStoppedAt);
+
+            case "LIVE":
+              return Date.parse(node.expiresAt);
+          }
+
+          return Date.parse(campaign.endTime);
+        },
+
+        get amount() {
+          switch (node.status) {
+            case "COMPLETED":
+              return node.payoutCents / 100;
+          }
+
+          return node.maximumPayoutCents / 100;
+        },
 
         campaign: {
           id: campaign.id,
@@ -81,7 +100,7 @@ async function refreshBounties() {
     }
   } catch {} // eslint-disable-line no-empty
 
-  const badgeCount = countBounties(bounties, "available");
+  const badgeCount = countBounties(bounties, "AVAILABLE");
   const color = active ? "purple" : "gray";
 
   browser.storage.session.set({
@@ -149,7 +168,7 @@ browser.storage.onChanged.addListener(async (changes) => {
   if (settings.notifications) {
     const newBounties = newValue.filter(
       (newItem) =>
-        newItem.status === "available" &&
+        newItem.status === "AVAILABLE" &&
         oldValue.every((oldItem) => newItem.campaign.id !== oldItem.campaign.id),
     );
 

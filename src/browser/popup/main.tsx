@@ -27,7 +27,7 @@ function App() {
   }, [isPopout]);
 
   return (
-    <Flex direction="column" w={{ base: 380, _popout: "auto" }}>
+    <Flex direction="column" w={{ base: 420, _popout: "auto" }}>
       <Header {...{ isPopout }} />
 
       <Suspense fallback={null}>

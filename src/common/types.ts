@@ -7,8 +7,8 @@ export interface BountyCampaign {
 export interface Bounty {
   id: string;
   status: string;
-  expiresAt: number;
-  payout: number;
+  date: number;
+  amount: number;
 
   campaign: BountyCampaign;
 }

@@ -8,6 +8,7 @@ query Coco_BountiesPage($login: String!, $status: String!) {
             id
             title
             boxArtURL
+            endTime
             game {
               boxArtURL(width: 85, height: 113)
             }
@@ -16,6 +17,7 @@ query Coco_BountiesPage($login: String!, $status: String!) {
           expiresAt
           maximumPayoutCents
           payoutCents
+          trackingStoppedAt
         }
       }
     }

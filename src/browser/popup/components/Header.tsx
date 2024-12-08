@@ -96,12 +96,12 @@ export function Header(props: HeaderProps) {
           className={classes.tabs}
           items={[
             {
-              badgeText: countBounties(bounties, "available"),
+              badgeText: countBounties(bounties, "AVAILABLE"),
               href: "/bounties/available",
               title: "Available",
             },
             {
-              badgeText: countBounties(bounties, "live"),
+              badgeText: countBounties(bounties, "LIVE"),
               href: "/bounties/live",
               title: "In Queue",
             },
@@ -133,7 +133,7 @@ export function Header(props: HeaderProps) {
                 icon: IconExternalLink,
                 disabled: props.isPopout,
                 onClick() {
-                  open("?popout=true", "popout", "width=384,height=600");
+                  open("?popout=true", "popout", "width=424,height=600");
                 },
               },
               {

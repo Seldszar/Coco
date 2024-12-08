@@ -1,7 +1,9 @@
 import { Bounty } from "~/common/types";
 
-import { currencyAmount, shortDateTime } from "~/browser/common/helpers";
+import { formatCurrency } from "~/browser/common/helpers";
 import { sva } from "~/browser/styled-system/css";
+
+import { BountyDetails } from "./BountyDetails";
 
 const recipe = sva({
   slots: ["root", "image", "inner", "name", "details", "payout"],
@@ -30,6 +32,7 @@ const recipe = sva({
 
     inner: {
       flex: 1,
+      minW: 0,
     },
 
     name: {
@@ -69,10 +72,12 @@ export function BountyCard(props: BountyCardProps) {
           {bounty.campaign.title}
         </h3>
 
-        <p className={classes.details}>Expires at {shortDateTime(bounty.expiresAt)}</p>
+        <p className={classes.details}>
+          <BountyDetails bounty={bounty} />
+        </p>
       </div>
 
-      <strong className={classes.payout}>{currencyAmount(bounty.payout)}</strong>
+      <strong className={classes.payout}>{formatCurrency(bounty.amount)}</strong>
     </a>
   );
 }

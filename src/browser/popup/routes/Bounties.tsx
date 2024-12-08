@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { RouteComponentProps } from "wouter";
+import { DefaultParams, RouteComponentProps } from "wouter";
 
 import { useBounties, useBountyBoardStatus } from "~/browser/common/hooks";
 import { Box } from "~/browser/styled-system/jsx";
@@ -8,14 +8,18 @@ import { BountyCard } from "../components/BountyCard";
 import { Button } from "../components/Button";
 import { EmptyMessage } from "../components/EmptyMessage";
 
-export function Bounties(props: RouteComponentProps) {
+interface RouteParams extends DefaultParams {
+  status: string;
+}
+
+export function Bounties(props: RouteComponentProps<RouteParams>) {
   const { params } = props;
 
   const [status] = useBountyBoardStatus();
   const [bounties] = useBounties();
 
   const filteredBounties = useMemo(
-    () => bounties.filter((bounty) => bounty.status === params.status),
+    () => bounties.filter((bounty) => bounty.status === params.status.toUpperCase()),
     [bounties, params.status],
   );
 

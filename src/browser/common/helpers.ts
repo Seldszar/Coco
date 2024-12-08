@@ -1,5 +1,5 @@
-const shortDateTimeFormat = new Intl.DateTimeFormat("en-US", {
-  dateStyle: "short",
+const dateTimeFormat = new Intl.DateTimeFormat("en-US", {
+  dateStyle: "medium",
   timeStyle: "short",
 });
 
@@ -9,10 +9,10 @@ const currencyFormat = new Intl.NumberFormat("en-US", {
   trailingZeroDisplay: "stripIfInteger",
 });
 
-export function shortDateTime(input: Date | number) {
-  return shortDateTimeFormat.format(input);
+export function formatDateTime(input: Date | number) {
+  return dateTimeFormat.format(input);
 }
 
-export function currencyAmount(input: number) {
+export function formatCurrency(input: number) {
   return currencyFormat.format(input);
 }
