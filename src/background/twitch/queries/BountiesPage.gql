@@ -14,6 +14,7 @@ query Coco_BountiesPage($login: String!, $status: String!) {
           }
           status
           expiresAt
+          maximumPayoutCents
           payoutCents
         }
       }

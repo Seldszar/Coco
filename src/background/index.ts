@@ -56,7 +56,7 @@ async function fetchBounties() {
         id: node.id,
         status: node.status.toLowerCase(),
         expiresAt: Date.parse(node.expiresAt),
-        payout: node.payoutCents / 100,
+        payout: (node.status === "COMPLETED" ? node.payoutCents : node.maximumPayoutCents) / 100,
 
         campaign: {
           id: campaign.id,
