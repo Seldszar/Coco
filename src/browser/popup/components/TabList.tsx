@@ -8,6 +8,7 @@ const recipe = sva({
   base: {
     root: {
       display: "flex",
+      overflowX: "auto",
     },
 
     badge: {
@@ -23,6 +24,7 @@ const recipe = sva({
 
 const tab = cva({
   base: {
+    flex: "none",
     py: 4,
   },
 
