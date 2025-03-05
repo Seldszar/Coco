@@ -1,3 +1,4 @@
+import { BountyStatus } from "~/common/constants";
 import { QueryInput, QueryOperation, QueryResult } from "~/common/types";
 
 import BountyBoardSettings from "./queries/BountyBoardSettings.gql";
@@ -96,8 +97,12 @@ async function query(input: QueryInput[]) {
   );
 }
 
+export function getLogin() {
+  return getCookieValue("login");
+}
+
 export async function getBountyBoardSettings() {
-  const login = await getCookieValue("login");
+  const login = await getLogin();
 
   return query([
     {
@@ -111,14 +116,14 @@ export async function getBountyBoardSettings() {
 }
 
 export async function getBounties() {
-  const login = await getCookieValue("login");
+  const login = await getLogin();
 
   return query([
     {
       ...BountiesPage,
 
       variables: {
-        status: "AVAILABLE",
+        status: BountyStatus.Available,
         login,
       },
     },
@@ -126,7 +131,7 @@ export async function getBounties() {
       ...BountiesPage,
 
       variables: {
-        status: "COMPLETED",
+        status: BountyStatus.Completed,
         login,
       },
     },
@@ -134,7 +139,7 @@ export async function getBounties() {
       ...BountiesPage,
 
       variables: {
-        status: "LIVE",
+        status: BountyStatus.Live,
         login,
       },
     },

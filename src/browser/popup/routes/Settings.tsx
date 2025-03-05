@@ -5,6 +5,7 @@ import { FormField } from "../components/FormField";
 import { RadioGroup } from "../components/RadioGroup";
 import { Section } from "../components/Section";
 import { Switch } from "../components/Switch";
+import { WebhookManager } from "../components/WebhookManager";
 
 export function Settings() {
   const [settings, , updateSettings] = useSettings();
@@ -37,6 +38,10 @@ export function Settings() {
         >
           Enable Notifications
         </Switch>
+      </Section>
+
+      <Section header="Webhooks">
+        <WebhookManager />
       </Section>
     </Box>
   );

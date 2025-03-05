@@ -1,4 +1,5 @@
-import { styled } from "~/browser/styled-system/jsx";
+import { HTMLStyledProps, styled } from "~/browser/styled-system/jsx";
+import { StyledVariantProps } from "~/browser/styled-system/types";
 
 export const Button = styled("button", {
   base: {
@@ -11,13 +12,7 @@ export const Button = styled("button", {
   variants: {
     color: {
       neutral: {
-        base: {
-          bg: { base: "black", _dark: "white" },
-          color: { base: "white", _dark: "black" },
-        },
-        _hover: {
-          bg: { base: "neutral.700", _dark: "neutral.300" },
-        },
+        bg: { base: "neutral.500", _hover: "neutral.400" },
       },
       purple: {
         bg: { base: "purple.500", _hover: "purple.400" },
@@ -27,9 +22,14 @@ export const Button = styled("button", {
         bg: { base: "red.500", _hover: "red.400" },
         color: "white",
       },
+      transparent: {
+        bg: { _hover: "neutral.500" },
+      },
     },
   },
   defaultVariants: {
     color: "neutral",
   },
 });
+
+export type ButtonProps = HTMLStyledProps<typeof Button> & StyledVariantProps<typeof Button>;

@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { sva } from "~/browser/styled-system/css";
+import { css, cx, sva } from "~/browser/styled-system/css";
 
 const recipe = sva({
   slots: ["header"],
@@ -17,6 +17,7 @@ const recipe = sva({
 });
 
 export interface FormFieldProps {
+  className?: string;
   children?: ReactNode;
   header?: ReactNode;
 }
@@ -27,7 +28,7 @@ export function FormField(props: FormFieldProps) {
   });
 
   return (
-    <label>
+    <label className={cx(css({ display: "block" }), props.className)}>
       <div className={styles.header}>{props.header}</div>
       {props.children}
     </label>

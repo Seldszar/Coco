@@ -58,11 +58,11 @@ export function Switch(props: SwitchProps) {
         className={cx("peer", styles.input)}
       />
 
-      <div className={styles.inner}>{props.children}</div>
-
       <div className={styles.icon}>
-        <Circle bg="white" size="16px" />
+        <Circle bg="white" size="14px" />
       </div>
+
+      {props.children && <div className={styles.inner}>{props.children}</div>}
     </label>
   );
 }

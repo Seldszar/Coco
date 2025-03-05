@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 import { DefaultParams, RouteComponentProps } from "wouter";
 
+import { BountyBoardStatus } from "~/common/constants";
+
 import { useBounties, useBountyBoardStatus } from "~/browser/common/hooks";
 import { Box } from "~/browser/styled-system/jsx";
 
@@ -23,12 +25,12 @@ export function Bounties(props: RouteComponentProps<RouteParams>) {
     [bounties, params.status],
   );
 
-  const refreshBounties = () =>
+  const refresh = () =>
     browser.runtime.sendMessage({
-      type: "refreshBounties",
+      type: "refresh",
     });
 
-  if (status === "ACCEPTED") {
+  if (status === BountyBoardStatus.Accepted) {
     if (filteredBounties.length === 0) {
       return <EmptyMessage>Your bounties will be displayed here</EmptyMessage>;
     }
@@ -45,7 +47,7 @@ export function Bounties(props: RouteComponentProps<RouteParams>) {
   return (
     <EmptyMessage>
       <Box pb={3}>It seems you don't have access to the Bounty Board</Box>
-      <Button onClick={() => refreshBounties()}>Retry</Button>
+      <Button onClick={() => refresh()}>Retry</Button>
     </EmptyMessage>
   );
 }
