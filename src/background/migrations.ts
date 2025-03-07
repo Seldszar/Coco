@@ -6,8 +6,9 @@ const migrations = new Map([
 
       await browser.storage.local.set({
         settings: {
+          theme: "light",
+          notifications: true,
           webhooks: [],
-          notifications: false,
 
           ...settings,
         },
