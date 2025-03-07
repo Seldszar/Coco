@@ -64,11 +64,11 @@ export function Form(props: FormProps) {
         </form.AppField>
 
         <Flex gap={3} mt={6}>
-          <form.SubscribeButton type="button" mr="auto" onClick={executeTestWebhook}>
+          <form.SubscribeButton type="button" onClick={executeTestWebhook}>
             Test
           </form.SubscribeButton>
 
-          <Button type="button" color="transparent" onClick={props.onCancel}>
+          <Button type="button" color="transparent" ml="auto" onClick={props.onCancel}>
             Cancel
           </Button>
 

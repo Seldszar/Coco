@@ -12,7 +12,11 @@ export const Button = styled("button", {
   variants: {
     color: {
       neutral: {
-        bg: { base: "neutral.500", _hover: "neutral.400" },
+        bg: {
+          base: "neutral.300",
+          _dark: "neutral.700",
+          _hover: { base: "neutral.400", _dark: "neutral.600" },
+        },
       },
       purple: {
         bg: { base: "purple.500", _hover: "purple.400" },
@@ -23,7 +27,7 @@ export const Button = styled("button", {
         color: "white",
       },
       transparent: {
-        bg: { _hover: "neutral.500" },
+        bg: { _hover: { base: "neutral.300", _dark: "neutral.700" } },
       },
     },
   },

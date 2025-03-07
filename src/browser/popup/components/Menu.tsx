@@ -13,7 +13,7 @@ const MenuItem = styled("button", {
     w: "full",
 
     _hover: {
-      bg: { base: "neutral.200", _dark: "neutral.800" },
+      bg: { base: "neutral.300", _dark: "neutral.700" },
     },
   },
 });

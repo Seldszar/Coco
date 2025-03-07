@@ -9,7 +9,7 @@ const recipe = sva({
   base: {
     root: {
       alignItems: "center",
-      bg: { base: "neutral.200", _dark: "neutral.950" },
+      bg: { base: "neutral.200", _dark: "neutral.800" },
       display: "flex",
       gap: 3,
       px: 4,
@@ -44,7 +44,7 @@ const recipe = sva({
         },
 
         indicator: {
-          borderWidth: 7,
+          borderWidth: 6,
         },
       },
     },
