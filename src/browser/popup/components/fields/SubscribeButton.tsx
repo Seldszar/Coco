@@ -7,7 +7,7 @@ export function SubscribeButton(props: SubscribeButtonProps) {
   const form = useFormContext();
 
   return (
-    <form.Subscribe selector={(state) => state.isSubmitting || state.isPristine}>
+    <form.Subscribe selector={(state) => !state.canSubmit || state.isSubmitting}>
       {(disabled) => <Button {...props} disabled={disabled} />}
     </form.Subscribe>
   );
