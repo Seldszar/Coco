@@ -1,7 +1,9 @@
+import { BountyBoardStatus, BountyStatus, WebhookType } from "~/common/constants";
 import { countBounties } from "~/common/helpers";
-import { Bounty } from "~/common/types";
+import { Bounty, Webhook } from "~/common/types";
 
-import { getBounties, getBountyBoardSettings } from "./twitch";
+import { applyMigrations } from "./migrations";
+import { getBounties, getBountyBoardSettings, getLogin } from "./twitch";
 
 function getIconUrl(color: string, size: number) {
   return browser.runtime.getURL(`icon-${color}-${size}.png`);
@@ -21,7 +23,7 @@ async function fetchStatus() {
   const [{ data }] = await getBountyBoardSettings();
 
   if (data == null) {
-    return "NONE";
+    return BountyBoardStatus.None;
   }
 
   const {
@@ -58,10 +60,10 @@ async function fetchBounties() {
 
         get date() {
           switch (node.status) {
-            case "COMPLETED":
+            case BountyStatus.Completed:
               return Date.parse(node.trackingStoppedAt);
 
-            case "LIVE":
+            case BountyStatus.Live:
               return Date.parse(node.expiresAt);
           }
 
@@ -70,7 +72,7 @@ async function fetchBounties() {
 
         get amount() {
           switch (node.status) {
-            case "COMPLETED":
+            case BountyStatus.Completed:
               return node.payoutCents / 100;
           }
 
@@ -80,6 +82,8 @@ async function fetchBounties() {
         campaign: {
           id: campaign.id,
           title: campaign.title,
+          sponsor: campaign.sponsor,
+          displayName: campaign.displayName || campaign.game.displayName,
           boxArtUrl: campaign.boxArtURL || campaign.game.boxArtURL,
         },
       };
@@ -87,20 +91,20 @@ async function fetchBounties() {
   });
 }
 
-async function refreshBounties() {
+async function refresh() {
   let bounties = new Array<Bounty>();
   let active = false;
 
   try {
     const status = await fetchStatus();
 
-    if (status === "ACCEPTED") {
+    if (status === BountyBoardStatus.Accepted) {
       bounties = await fetchBounties();
       active = true;
     }
   } catch {} // eslint-disable-line no-empty
 
-  const badgeCount = countBounties(bounties, "AVAILABLE");
+  const badgeCount = countBounties(bounties, BountyStatus.Available);
   const color = active ? "purple" : "gray";
 
   browser.storage.session.set({
@@ -127,21 +131,122 @@ async function refreshBounties() {
   });
 }
 
+async function formatTestWebhook(webhook: Webhook) {
+  const login = await getLogin();
+
+  switch (webhook.type) {
+    case WebhookType.Discord:
+      return {
+        username: browser.i18n.getMessage("extensionName"),
+        avatar_url: "https://github.com/Seldszar/Coco/raw/main/public/icon-purple-96.png",
+        content: browser.i18n.getMessage("testWebhook_messageContent", login),
+      };
+
+    case WebhookType.Slack:
+      return {
+        text: browser.i18n.getMessage("testWebhook_messageContent", login),
+      };
+  }
+
+  throw new RangeError("Webhook type not supported");
+}
+
+async function formatBountyWebhook(webhook: Webhook, bounty: Bounty) {
+  const login = await getLogin();
+
+  switch (webhook.type) {
+    case WebhookType.Discord:
+      return {
+        username: browser.i18n.getMessage("extensionName"),
+        avatar_url: "https://github.com/Seldszar/Coco/raw/main/public/icon-purple-96.png",
+        content: browser.i18n.getMessage("bountyWebhook_messageContent", login),
+        embeds: [
+          {
+            title: bounty.campaign.sponsor,
+            description: bounty.campaign.title,
+            url: "https://dashboard.twitch.tv/bounties",
+            color: "11032055",
+            thumbnail: {
+              url: bounty.campaign.boxArtUrl,
+            },
+            footer: {
+              text: browser.i18n.getMessage("extensionName"),
+              icon_url: "https://github.com/Seldszar/Coco/raw/main/public/icon-purple-32.png",
+            },
+          },
+        ],
+      };
+
+    case WebhookType.Slack:
+      return {
+        text: browser.i18n.getMessage("bountyWebhook_messageContent", login),
+        blocks: [
+          {
+            type: "actions",
+            elements: [
+              {
+                type: "section",
+                text: {
+                  type: "mrkdwn",
+                  text: `*<https://dashboard.twitch.tv/bounties|${bounty.campaign.sponsor}>*\n${bounty.campaign.title}`,
+                },
+                accessory: {
+                  type: "image",
+                  image_url: bounty.campaign.boxArtUrl,
+                  alt_text: bounty.campaign.title,
+                },
+              },
+              {
+                type: "button",
+                url: "https://dashboard.twitch.tv/bounties",
+                text: {
+                  type: "plain_text",
+                  text: browser.i18n.getMessage("bountyWebhook_buttonLabel"),
+                },
+              },
+            ],
+          },
+        ],
+      };
+  }
+
+  throw new RangeError("Webhook type not supported");
+}
+
+async function executeWebhook(webhook: Webhook, body: any) {
+  return fetch(webhook.url, {
+    headers: [["Content-Type", "application/json"]],
+    body: JSON.stringify(body),
+    method: "POST",
+  });
+}
+
+async function executeTestWebhook(webhook: Webhook) {
+  return executeWebhook(webhook, await formatTestWebhook(webhook));
+}
+
+async function executeBountyWebhook(webhook: Webhook, bounty: Bounty) {
+  return executeWebhook(webhook, await formatBountyWebhook(webhook, bounty));
+}
+
 async function checkAlarm() {
   if (await browser.alarms.get()) {
     return;
   }
 
-  refreshBounties();
+  refresh();
 }
 
 browser.runtime.onMessage.addListener(async (message) => {
   switch (message.type) {
+    case "executeTestWebhook":
+      return executeTestWebhook(message.data);
+
     case "openBountyBoard":
       return openBountyBoard();
 
-    case "refreshBounties":
-      return refreshBounties();
+    case "refresh":
+      return refresh();
   }
 
   throw new RangeError("Unknown message type");
@@ -153,7 +258,8 @@ browser.storage.onChanged.addListener(async (changes) => {
   if (bounties == null) {
     return;
   }
-  const { newValue = [], oldValue } = bounties;
+
+  const { newValue, oldValue } = bounties;
 
   if (oldValue == null) {
     return;
@@ -162,20 +268,21 @@ browser.storage.onChanged.addListener(async (changes) => {
   const { settings } = await browser.storage.local.get({
     settings: {
       notifications: false,
+      webhooks: [],
     },
   });
 
+  const newBounties = newValue.filter(
+    (newItem: Bounty) =>
+      newItem.status === BountyStatus.Available &&
+      oldValue.every((oldItem: Bounty) => newItem.campaign.id !== oldItem.campaign.id),
+  );
+
+  if (newBounties.length === 0) {
+    return;
+  }
+
   if (settings.notifications) {
-    const newBounties = newValue.filter(
-      (newItem) =>
-        newItem.status === "AVAILABLE" &&
-        oldValue.every((oldItem) => newItem.campaign.id !== oldItem.campaign.id),
-    );
-
-    if (newBounties.length === 0) {
-      return;
-    }
-
     newBounties.forEach((bounty: Bounty) => {
       browser.notifications.create({
         iconUrl: getIconUrl("purple", 96),
@@ -185,11 +292,19 @@ browser.storage.onChanged.addListener(async (changes) => {
       });
     });
   }
+
+  settings.webhooks.forEach((webhook: Webhook) => {
+    newBounties.forEach((bounty: Bounty) => executeBountyWebhook(webhook, bounty));
+  });
 });
 
-browser.runtime.onInstalled.addListener(refreshBounties);
-browser.runtime.onStartup.addListener(refreshBounties);
-browser.alarms.onAlarm.addListener(refreshBounties);
+browser.runtime.onInstalled.addListener(async () => {
+  await applyMigrations();
+  await refresh();
+});
+
+browser.runtime.onStartup.addListener(refresh);
+browser.alarms.onAlarm.addListener(refresh);
 
 browser.action.onClicked.addListener(openBountyBoard);
 browser.notifications.onClicked.addListener(openBountyBoard);

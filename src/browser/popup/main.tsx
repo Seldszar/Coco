@@ -1,7 +1,7 @@
 import "./assets/styles/main.css";
 
-import { Suspense, useLayoutEffect } from "react";
-import { Route, Switch } from "wouter";
+import { useLayoutEffect } from "react";
+import { Redirect, Route, Switch } from "wouter";
 
 import { useSearchParams, useSettings } from "~/browser/common/hooks";
 import { Flex } from "~/browser/styled-system/jsx";
@@ -30,13 +30,14 @@ function App() {
     <Flex direction="column" w={{ base: 420, _popout: "auto" }}>
       <Header {...{ isPopout }} />
 
-      <Suspense fallback={null}>
-        <Switch>
-          <Route path="/bounties/:status" component={Bounties} />
-          <Route path="/settings" component={Settings} />
-          <Route path="/donate" component={Donate} />
-        </Switch>
-      </Suspense>
+      <Switch>
+        <Route path="/bounties/:status" component={Bounties} />
+        <Route path="/settings" component={Settings} />
+        <Route path="/donate" component={Donate} />
+        <Route>
+          <Redirect replace to="/bounties/available" />
+        </Route>
+      </Switch>
     </Flex>
   );
 }

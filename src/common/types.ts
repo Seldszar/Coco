@@ -1,16 +1,25 @@
+import { BountyStatus, WebhookType } from "./constants";
+
 export interface BountyCampaign {
   id: string;
   title: string;
+  sponsor: string;
+  displayName: string;
   boxArtUrl: string;
 }
 
 export interface Bounty {
   id: string;
-  status: string;
+  status: BountyStatus;
   date: number;
   amount: number;
-
   campaign: BountyCampaign;
+}
+
+export interface Webhook {
+  id: string;
+  type: WebhookType;
+  url: string;
 }
 
 export interface QueryInput {

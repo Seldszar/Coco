@@ -1,12 +1,12 @@
 import { ReactNode } from "react";
 
-import { sva } from "~/browser/styled-system/css";
+import { css, cx, sva } from "~/browser/styled-system/css";
 
 const recipe = sva({
-  slots: ["header"],
+  slots: ["label"],
 
   base: {
-    header: {
+    label: {
       color: { base: "neutral.600", _dark: "neutral.400" },
       fontSize: "sm",
       fontWeight: "bold",
@@ -17,8 +17,10 @@ const recipe = sva({
 });
 
 export interface FormFieldProps {
+  className?: string;
+
+  label?: ReactNode;
   children?: ReactNode;
-  header?: ReactNode;
 }
 
 export function FormField(props: FormFieldProps) {
@@ -27,8 +29,8 @@ export function FormField(props: FormFieldProps) {
   });
 
   return (
-    <label>
-      <div className={styles.header}>{props.header}</div>
+    <label className={cx(css({ display: "block" }), props.className)}>
+      {props.label && <div className={styles.label}>{props.label}</div>}
       {props.children}
     </label>
   );
