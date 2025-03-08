@@ -2,7 +2,8 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Storage } from "webextension-polyfill";
 import { useSearch } from "wouter";
 
-import { Bounty } from "~/common/types";
+import { BountyBoardStatus } from "~/common/constants";
+import { Bounty, Webhook } from "~/common/types";
 
 export function useSearchParams() {
   const search = useSearch();
@@ -59,13 +60,14 @@ export function useStorage<T>(areaName: "local" | "session", key: string, defaul
 
 export function useSettings() {
   return useStorage("local", "settings", {
+    webhooks: new Array<Webhook>(),
     notifications: false,
     theme: "light",
   });
 }
 
 export function useBountyBoardStatus() {
-  return useStorage("session", "status", "NONE");
+  return useStorage("session", "status", BountyBoardStatus.None);
 }
 
 export function useBounties() {

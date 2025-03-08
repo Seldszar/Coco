@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { HTMLProps, ReactNode } from "react";
 
 import { cx, sva } from "~/browser/styled-system/css";
 import { Circle } from "~/browser/styled-system/jsx";
@@ -37,11 +37,8 @@ const recipe = sva({
   },
 });
 
-export interface SwitchProps {
+export interface SwitchProps extends HTMLProps<HTMLInputElement> {
   children?: ReactNode;
-
-  checked: boolean;
-  onChecked(checked: boolean): void;
 }
 
 export function Switch(props: SwitchProps) {
@@ -51,18 +48,13 @@ export function Switch(props: SwitchProps) {
 
   return (
     <label className={styles.root}>
-      <input
-        type="checkbox"
-        checked={props.checked}
-        onChange={() => props.onChecked(!props.checked)}
-        className={cx("peer", styles.input)}
-      />
-
-      <div className={styles.inner}>{props.children}</div>
+      <input {...props} type="checkbox" className={cx("peer", styles.input)} />
 
       <div className={styles.icon}>
-        <Circle bg="white" size="16px" />
+        <Circle bg="white" size="14px" />
       </div>
+
+      {props.children && <div className={styles.inner}>{props.children}</div>}
     </label>
   );
 }

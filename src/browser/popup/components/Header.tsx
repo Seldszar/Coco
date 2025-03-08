@@ -7,6 +7,7 @@ import {
 } from "@tabler/icons-react";
 import { useLocation } from "wouter";
 
+import { BountyStatus } from "~/common/constants";
 import { countBounties } from "~/common/helpers";
 
 import { useBounties, useToggle } from "~/browser/common/hooks";
@@ -43,7 +44,7 @@ const recipe = sva({
       rounded: "md",
 
       _hover: {
-        bg: { base: "neutral.200", _dark: "neutral.800" },
+        bg: { base: "neutral.300", _dark: "neutral.700" },
       },
     },
 
@@ -96,12 +97,12 @@ export function Header(props: HeaderProps) {
           className={classes.tabs}
           items={[
             {
-              badgeText: countBounties(bounties, "AVAILABLE"),
+              badgeText: countBounties(bounties, BountyStatus.Available),
               href: "/bounties/available",
               title: "Available",
             },
             {
-              badgeText: countBounties(bounties, "LIVE"),
+              badgeText: countBounties(bounties, BountyStatus.Live),
               href: "/bounties/live",
               title: "In Queue",
             },

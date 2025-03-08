@@ -7,9 +7,12 @@ query Coco_BountiesPage($login: String!, $status: String!) {
           campaign {
             id
             title
+            sponsor
+            displayName
             boxArtURL
             endTime
             game {
+              displayName
               boxArtURL(width: 85, height: 113)
             }
           }
