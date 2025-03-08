@@ -8,6 +8,11 @@ export const Button = styled("button", {
     px: 5,
     py: 2.5,
     rounded: "md",
+
+    _disabled: {
+      cursor: "not-allowed",
+      opacity: 0.5,
+    },
   },
   variants: {
     color: {

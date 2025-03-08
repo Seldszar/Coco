@@ -1,4 +1,3 @@
-const fs = require("node:fs");
 const path = require("node:path");
 
 const { EnvironmentPlugin, ProvidePlugin } = require("webpack");
@@ -9,13 +8,6 @@ const { EntryWrapperPlugin } = require("@seldszar/yael");
 const CopyWebpackPlugin = require("copy-webpack-plugin");
 const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
-
-const localeReplacements = [
-  {
-    source: "nb_NO",
-    target: "no",
-  },
-];
 
 module.exports = (env, argv) => {
   const isDevelopment = argv.mode === "development";
@@ -80,27 +72,6 @@ module.exports = (env, argv) => {
           {
             from: "**/*",
             context: "locales",
-            filter(resourcePath) {
-              try {
-                const data = JSON.parse(fs.readFileSync(resourcePath, "utf-8"));
-
-                if (data.extensionName == null) {
-                  return false;
-                }
-              } catch {} // eslint-disable-line no-empty
-
-              return true;
-            },
-            to(pathData) {
-              const relativePath = path
-                .relative(pathData.context, pathData.absoluteFilename)
-                .replace(/\\/g, "/");
-
-              return `_locales/${localeReplacements.reduce(
-                (result, { source, target }) => result.replace(source, target),
-                relativePath,
-              )}`;
-            },
           },
         ],
       }),

@@ -2,8 +2,8 @@ import { useSettings } from "~/browser/common/hooks";
 import { Box } from "~/browser/styled-system/jsx";
 
 import { FormField } from "../components/FormField";
-import { RadioGroup } from "../components/RadioGroup";
 import { Section } from "../components/Section";
+import { Select } from "../components/Select";
 import { Switch } from "../components/Switch";
 import { WebhookManager } from "../components/WebhookManager";
 
@@ -13,19 +13,15 @@ export function Settings() {
   return (
     <Box divideColor={{ base: "neutral.300", _dark: "neutral.700" }} divideY={1}>
       <Section header="Appearance">
-        <FormField header="Theme">
-          <RadioGroup
+        <FormField label="Theme">
+          <Select
             value={settings.theme}
-            onChange={(theme) => updateSettings((value) => ({ ...value, theme }))}
+            onChange={(event) =>
+              updateSettings((value) => ({ ...value, theme: event.currentTarget.value }))
+            }
             options={[
-              {
-                value: "light",
-                children: "Light",
-              },
-              {
-                value: "dark",
-                children: "Dark",
-              },
+              { value: "light", label: "Light" },
+              { value: "dark", label: "Dark" },
             ]}
           />
         </FormField>
@@ -34,7 +30,9 @@ export function Settings() {
       <Section header="Notifications">
         <Switch
           checked={settings.notifications}
-          onChecked={(notifications) => updateSettings((value) => ({ ...value, notifications }))}
+          onChange={(event) =>
+            updateSettings((value) => ({ ...value, notifications: event.currentTarget.checked }))
+          }
         >
           Enable Notifications
         </Switch>

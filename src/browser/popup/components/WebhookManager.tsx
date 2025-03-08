@@ -1,6 +1,5 @@
 import { IconTrash } from "@tabler/icons-react";
-import { useState } from "react";
-import { z } from "zod";
+import { FormEventHandler, useState } from "react";
 
 import { WebhookType } from "~/common/constants";
 import { Webhook } from "~/common/types";
@@ -11,71 +10,59 @@ import { css } from "~/browser/styled-system/css";
 import { Box, Flex, Grid } from "~/browser/styled-system/jsx";
 
 import { Button } from "./Button";
-import { useAppForm } from "./Form";
+import { FormField } from "./FormField";
+import { Input } from "./Input";
+import { Select } from "./Select";
+
+interface FormValues {
+  type: WebhookType;
+  url: string;
+}
 
 export interface FormProps {
-  onSubmit(webhook: Webhook): void;
+  onSubmit(value: FormValues): void;
   onCancel(): void;
 }
 
 export function Form(props: FormProps) {
-  const form = useAppForm({
-    defaultValues: {
-      id: crypto.randomUUID(),
-      type: "",
-      url: "",
-    },
+  const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
+    event.preventDefault();
 
-    onSubmit({ value }) {
-      props.onSubmit(value as Webhook);
-    },
-  });
+    if (event.currentTarget.reportValidity()) {
+      const formData = new FormData(event.currentTarget);
 
-  const executeTestWebhook = () =>
-    browser.runtime.sendMessage({ type: "executeTestWebhook", data: form.state.values });
+      props.onSubmit({
+        type: formData.get("type") as WebhookType,
+        url: formData.get("url") as string,
+      });
+    }
+  };
 
   return (
-    <form.AppForm>
-      <form
-        className={css({ spaceY: 6 })}
-        onSubmit={(event) => (event.preventDefault(), form.handleSubmit())}
-      >
-        <form.AppField name="type" validators={{ onChange: z.nativeEnum(WebhookType) }}>
-          {(field) => (
-            <field.SelectField
-              className={css({ flex: "none" })}
-              header="Type"
-              options={[
-                {
-                  value: WebhookType.Discord,
-                  label: "Discord",
-                },
-                {
-                  value: WebhookType.Slack,
-                  label: "Slack",
-                },
-              ]}
-            />
-          )}
-        </form.AppField>
+    <form className={css({ spaceY: 6 })} onSubmit={onSubmit}>
+      <FormField label="Type">
+        <Select
+          required
+          name="type"
+          options={[
+            { value: WebhookType.Discord, label: "Discord" },
+            { value: WebhookType.Slack, label: "Slack" },
+          ]}
+        />
+      </FormField>
 
-        <form.AppField name="url" validators={{ onChange: z.string().url() }}>
-          {(field) => <field.TextField className={css({ flex: 1 })} header="URL" />}
-        </form.AppField>
+      <FormField label="URL">
+        <Input type="url" required name="url" />
+      </FormField>
 
-        <Flex gap={3} mt={6}>
-          <form.SubscribeButton type="button" onClick={executeTestWebhook}>
-            Test
-          </form.SubscribeButton>
+      <Flex gap={3} mt={6}>
+        <Button type="button" color="transparent" ml="auto" onClick={props.onCancel}>
+          Cancel
+        </Button>
 
-          <Button type="button" color="transparent" ml="auto" onClick={props.onCancel}>
-            Cancel
-          </Button>
-
-          <form.SubscribeButton color="purple">Save</form.SubscribeButton>
-        </Flex>
-      </form>
-    </form.AppForm>
+        <Button color="purple">Save</Button>
+      </Flex>
+    </form>
   );
 }
 
@@ -91,7 +78,9 @@ function NewButton(props: NewButtonProps) {
       <Box bg={{ base: "neutral.200", _dark: "neutral.800" }} p={6} rounded="md">
         <Form
           onCancel={() => setOpen(false)}
-          onSubmit={(webhook) => (props.onSubmit(webhook), setOpen(false))}
+          onSubmit={(value) => (
+            props.onSubmit({ ...value, id: crypto.randomUUID() }), setOpen(false)
+          )}
         />
       </Box>
     );
