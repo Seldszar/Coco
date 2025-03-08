@@ -1,4 +1,5 @@
-import { HTMLProps } from "react";
+import { Icon } from "@tabler/icons-react";
+import { HTMLProps, ReactNode } from "react";
 
 import { styled } from "~/browser/styled-system/jsx";
 
@@ -18,8 +19,17 @@ const MenuItem = styled("button", {
   },
 });
 
+export interface MenuItemProps {
+  disabled?: boolean;
+
+  icon: Icon;
+  title: ReactNode;
+
+  onClick?(): void;
+}
+
 export interface MenuProps extends HTMLProps<HTMLDivElement> {
-  items: any[];
+  items: MenuItemProps[];
 }
 
 export function Menu(props: MenuProps) {
