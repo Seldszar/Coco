@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.4.0](https://github.com/Seldszar/Coco/compare/v1.3.2...v1.4.0) (2025-03-08)
+
+
+### Features
+
+* webhooks ([00c93e0](https://github.com/Seldszar/Coco/commit/00c93e051a6b83d3c9bdf0700a8a65ff8943b791))
+
 ## [1.3.2](https://github.com/Seldszar/Coco/compare/v1.3.1...v1.3.2) (2024-12-08)
 
 
