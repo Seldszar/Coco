@@ -1,5 +1,5 @@
 import { IconTrash } from "@tabler/icons-react";
-import { FormEventHandler, useState } from "react";
+import { FormEvent, useRef, useState } from "react";
 
 import { WebhookType } from "~/common/constants";
 import { Webhook } from "~/common/types";
@@ -25,21 +25,35 @@ export interface FormProps {
 }
 
 export function Form(props: FormProps) {
-  const onSubmit: FormEventHandler<HTMLFormElement> = (event) => {
-    event.preventDefault();
+  const formRef = useRef<HTMLFormElement>(null);
 
-    if (event.currentTarget.reportValidity()) {
-      const formData = new FormData(event.currentTarget);
+  const handleFormValues = (callback: (data: FormValues) => void) => {
+    const form = formRef.current;
 
-      props.onSubmit({
+    if (form?.reportValidity()) {
+      const formData = new FormData(form);
+
+      callback({
         type: formData.get("type") as WebhookType,
         url: formData.get("url") as string,
       });
     }
   };
+  const onTest = () =>
+    handleFormValues((data) => {
+      browser.runtime.sendMessage({ data, type: "executeTestWebhook" });
+    });
+
+  const onSubmit = (event: FormEvent) => {
+    event.preventDefault();
+
+    handleFormValues((data) => {
+      props.onSubmit(data);
+    });
+  };
 
   return (
-    <form className={css({ spaceY: 6 })} onSubmit={onSubmit}>
+    <form ref={formRef} className={css({ spaceY: 6 })} onSubmit={onSubmit}>
       <FormField label="Type">
         <Select
           required
@@ -56,11 +70,17 @@ export function Form(props: FormProps) {
       </FormField>
 
       <Flex gap={3} mt={6}>
-        <Button type="button" color="transparent" ml="auto" onClick={props.onCancel}>
+        <Button type="button" mr="auto" onClick={onTest}>
+          Test
+        </Button>
+
+        <Button type="button" color="transparent" onClick={props.onCancel}>
           Cancel
         </Button>
 
-        <Button color="purple">Save</Button>
+        <Button type="submit" color="purple">
+          Add
+        </Button>
       </Flex>
     </form>
   );
