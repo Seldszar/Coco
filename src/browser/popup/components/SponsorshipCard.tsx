@@ -1,4 +1,4 @@
-import { Bounty } from "~/common/types";
+import { Sponsorship } from "~/common/types";
 
 import { formatCurrency } from "~/browser/common/helpers";
 import { sva } from "~/browser/styled-system/css";
@@ -21,7 +21,7 @@ const recipe = sva({
       aspectRatio: "square",
       bg: { base: "white", _dark: "black" },
       h: "64px",
-      objectFit: "contain",
+      objectFit: "cover",
       objectPosition: "center",
     },
 
@@ -46,32 +46,32 @@ const recipe = sva({
   },
 });
 
-export interface BountyCardProps {
-  bounty: Bounty;
+export interface SponsorshipCardProps {
+  sponsorship: Sponsorship;
 }
 
-export function BountyCard(props: BountyCardProps) {
-  const { bounty } = props;
+export function SponsorshipCard(props: SponsorshipCardProps) {
+  const { sponsorship } = props;
 
   const classes = recipe({
     // ...
   });
 
   return (
-    <a className={classes.root} href={bounty.url} target="_blank">
-      <img className={classes.image} src={bounty.campaign.boxArtUrl} alt={bounty.campaign.title} />
+    <a className={classes.root} href={sponsorship.url} target="_blank">
+      <img className={classes.image} src={sponsorship.brand.imageUrl} alt={sponsorship.brand.name} />
 
       <div className={classes.inner}>
         <Flex>
-          <h3 className={classes.name} title={bounty.campaign.title}>
-            {bounty.campaign.title}
+          <h3 className={classes.name} title={sponsorship.brand.name}>
+            {sponsorship.brand.name}
           </h3>
 
-          <strong className={classes.payout}>{formatCurrency({ amount: bounty.amount, currencyCode: "USD" })}</strong>
+          <strong className={classes.payout}>{formatCurrency(sponsorship.amount)}</strong>
         </Flex>
 
         <p className={classes.details}>
-          <BountyDetails status={bounty.status} date={bounty.date} />
+          <BountyDetails status={sponsorship.status} date={sponsorship.date} />
         </p>
       </div>
     </a>

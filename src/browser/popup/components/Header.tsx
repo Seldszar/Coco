@@ -1,16 +1,10 @@
-import {
-  IconChevronDown,
-  IconChevronUp,
-  IconExternalLink,
-  IconHeart,
-  IconSettings,
-} from "@tabler/icons-react";
+import { IconChevronDown, IconChevronUp, IconExternalLink, IconHeart, IconSettings } from "@tabler/icons-react";
 import { useLocation } from "wouter";
 
 import { BountyStatus } from "~/common/constants";
-import { countBounties } from "~/common/helpers";
+import { arrayCount } from "~/common/helpers";
 
-import { useBounties, useToggle } from "~/browser/common/hooks";
+import { useBounties, useSponsorships, useToggle } from "~/browser/common/hooks";
 import { sva } from "~/browser/styled-system/css";
 import { Grid, styled } from "~/browser/styled-system/jsx";
 
@@ -76,6 +70,7 @@ export interface HeaderProps {
 }
 
 export function Header(props: HeaderProps) {
+  const [sponsorships] = useSponsorships();
   const [bounties] = useBounties();
 
   const [isMenuOpen, toggleMenu] = useToggle(false);
@@ -84,6 +79,10 @@ export function Header(props: HeaderProps) {
   const classes = recipe({
     isMenuOpen,
   });
+
+  const getBadgeCount = (status: BountyStatus) =>
+    arrayCount(sponsorships, (sponsorship) => sponsorship.status === status) +
+    arrayCount(bounties, (bounty) => bounty.status === status);
 
   const openBountyBoard = () =>
     browser.runtime.sendMessage({
@@ -97,12 +96,12 @@ export function Header(props: HeaderProps) {
           className={classes.tabs}
           items={[
             {
-              badgeText: countBounties(bounties, BountyStatus.Available),
+              badgeText: getBadgeCount(BountyStatus.Available),
               href: "/bounties/available",
               title: "Available",
             },
             {
-              badgeText: countBounties(bounties, BountyStatus.Live),
+              badgeText: getBadgeCount(BountyStatus.Live),
               href: "/bounties/live",
               title: "In Queue",
             },

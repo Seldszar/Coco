@@ -2,8 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Storage } from "webextension-polyfill";
 import { useSearch } from "wouter";
 
-import { BountyBoardStatus } from "~/common/constants";
-import { Bounty, Webhook } from "~/common/types";
+import { Bounty, Sponsorship, ThirdPartySponsorship, Webhook } from "~/common/types";
 
 export function useSearchParams() {
   const search = useSearch();
@@ -16,8 +15,7 @@ export function useSearchParams() {
 export function useToggle(initialState: boolean) {
   const [value, setValue] = useState(initialState);
 
-  const toggle = (newValue?: boolean) =>
-    setValue((value) => (typeof newValue === "boolean" ? newValue : !value));
+  const toggle = (newValue?: boolean) => setValue((value) => (typeof newValue === "boolean" ? newValue : !value));
 
   return [value, toggle] as const;
 }
@@ -29,9 +27,8 @@ export function useStorage<T>(areaName: "local" | "session", key: string, defaul
   const areaStorage = useMemo(() => browser.storage[areaName], [areaName]);
 
   useEffect(() => {
-    const promise = areaStorage.get(key);
-
-    promise
+    areaStorage
+      .get(key)
       .then((values) => key in values && setValue(values[key]))
       .finally(() => setLoading(false));
 
@@ -66,10 +63,18 @@ export function useSettings() {
   });
 }
 
-export function useBountyBoardStatus() {
-  return useStorage("session", "status", BountyBoardStatus.None);
+export function useStatus() {
+  return useStorage("session", "enabled", false);
 }
 
 export function useBounties() {
   return useStorage("session", "bounties", new Array<Bounty>());
+}
+
+export function useSponsorships() {
+  return useStorage("session", "sponsorships", new Array<Sponsorship>());
+}
+
+export function useThirdPartySponsorships() {
+  return useStorage("session", "thirdPartySponsorships", new Array<ThirdPartySponsorship>());
 }

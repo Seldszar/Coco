@@ -1,0 +1,57 @@
+query Coco_Sponsorships($query: SponsorshipInstanceQuery) {
+  sponsorshipInstances(query: $query) {
+    edges {
+      node {
+        id
+        state
+        acceptBy
+        description
+
+        activities {
+          ... on ChannelSkin {
+            advertiser {
+              name
+
+              imageAsset {
+                lightModeURL
+                darkModeURL
+              }
+            }
+          }
+
+          ... on HostReadAd {
+            advertiserName
+          }
+
+          ... on SubsidizedSubscriptions {
+            advertiser {
+              name
+
+              imageAsset {
+                lightModeURL
+                darkModeURL
+              }
+            }
+          }
+
+          activation {
+            startsAt
+            endsAt
+          }
+        }
+
+        paymentActual {
+          currencyCode
+          minorUnits
+          amount
+        }
+
+        paymentPotential {
+          currencyCode
+          minorUnits
+          amount
+        }
+      }
+    }
+  }
+}
