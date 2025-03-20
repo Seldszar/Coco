@@ -1,21 +1,12 @@
 import { BountyStatus } from "~/common/constants";
-import { arrayCount } from "~/common/helpers";
+import { arrayCount, getIconUrl } from "~/common/helpers";
 import { Bounty, Sponsorship, ThirdPartySponsorship } from "~/common/types";
 
 import { applyMigrations } from "./migrations";
 
-import { fetchBountyBoardStatus, fetchBounties, openBountyBoard } from "./modules/bounties";
-import {
-  fetchSponsorshipBoardStatus,
-  fetchSponsorships,
-  fetchThirdPartySponsorships,
-  openSponsorshipBoard,
-} from "./modules/sponsorships";
-import { executeBountyWebhook, executeSponsorshipWebhook, executeTestWebhook } from "./modules/webhooks";
-
-function getIconUrl(color: string, size: number) {
-  return browser.runtime.getURL(`icon-${color}-${size}.png`);
-}
+import { bountyModule } from "./modules/bounties";
+import { sponsorshipModule } from "./modules/sponsorships";
+import { webhookModule } from "./modules/webhooks";
 
 async function refresh() {
   let bounties = new Array<Bounty>();
@@ -26,10 +17,10 @@ async function refresh() {
   let count = 0;
 
   try {
-    const status = await fetchBountyBoardStatus();
+    const status = await bountyModule.fetchBountyBoardStatus();
 
     if (status) {
-      bounties = bounties.concat(await fetchBounties());
+      bounties = bounties.concat(await bountyModule.fetchBounties());
 
       count += arrayCount(bounties, (item) => item.status === BountyStatus.Available);
       enabled = true;
@@ -39,11 +30,11 @@ async function refresh() {
   }
 
   try {
-    const status = await fetchSponsorshipBoardStatus();
+    const status = await sponsorshipModule.fetchSponsorshipBoardStatus();
 
     if (status) {
-      sponsorships = sponsorships.concat(await fetchSponsorships());
-      thirdPartySponsorships = thirdPartySponsorships.concat(await fetchThirdPartySponsorships());
+      sponsorships = sponsorships.concat(await sponsorshipModule.fetchSponsorships());
+      thirdPartySponsorships = thirdPartySponsorships.concat(await sponsorshipModule.fetchThirdPartySponsorships());
 
       count += arrayCount(sponsorships, (item) => item.status === BountyStatus.Available);
       enabled = true;
@@ -93,13 +84,13 @@ async function checkAlarm() {
 browser.runtime.onMessage.addListener(async (message) => {
   switch (message.type) {
     case "executeTestWebhook":
-      return executeTestWebhook(message.data);
+      return webhookModule.executeTestWebhook(message.data);
 
     case "openBountyBoard":
-      return openBountyBoard();
+      return bountyModule.openBountyBoard();
 
     case "openSponsorshipBoard":
-      return openSponsorshipBoard();
+      return sponsorshipModule.openSponsorshipBoard();
 
     case "refresh":
       return refresh();
@@ -157,18 +148,11 @@ browser.storage.onChanged.addListener(async (changes) => {
     const bounties = getNewBounties(changes.bounties);
 
     if (settings.notifications) {
-      bounties.forEach((bounty) => {
-        browser.notifications.create({
-          iconUrl: getIconUrl("purple", 96),
-          title: browser.i18n.getMessage("notificationTitle_newTwitchBountyAvailable"),
-          message: bounty.campaign.title,
-          type: "basic",
-        });
-      });
+      bounties.forEach(bountyModule.createNotification);
     }
 
     settings.webhooks.forEach((webhook) => {
-      bounties.forEach((bounty) => executeBountyWebhook(webhook, bounty));
+      bounties.forEach((bounty) => webhookModule.executeBountyWebhook(webhook, bounty));
     });
   }
 
@@ -176,18 +160,11 @@ browser.storage.onChanged.addListener(async (changes) => {
     const sponsorships = getNewSponsorships(changes.sponsorships);
 
     if (settings.notifications) {
-      sponsorships.forEach((sponsorship) => {
-        browser.notifications.create({
-          iconUrl: getIconUrl("purple", 96),
-          title: browser.i18n.getMessage("notificationTitle_newTwitchCampaignAvailable"),
-          message: sponsorship.brand.name,
-          type: "basic",
-        });
-      });
+      sponsorships.forEach(sponsorshipModule.createNotification);
     }
 
     settings.webhooks.forEach((webhook) => {
-      sponsorships.forEach((sponsorship) => executeSponsorshipWebhook(webhook, sponsorship));
+      sponsorships.forEach((sponsorship) => webhookModule.executeSponsorshipWebhook(webhook, sponsorship));
     });
   }
 });
@@ -200,7 +177,16 @@ browser.runtime.onInstalled.addListener(async () => {
 browser.runtime.onStartup.addListener(refresh);
 browser.alarms.onAlarm.addListener(refresh);
 
-browser.action.onClicked.addListener(openBountyBoard);
-browser.notifications.onClicked.addListener(openBountyBoard);
+browser.notifications.onClicked.addListener((notificationId) => {
+  const [type] = notificationId.split(":");
+
+  switch (type) {
+    case "bounty":
+      return bountyModule.openBountyBoard();
+
+    case "sponsorship":
+      return sponsorshipModule.openSponsorshipBoard();
+  }
+});
 
 checkAlarm();

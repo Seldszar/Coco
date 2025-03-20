@@ -59,3 +59,7 @@ export function formatSponsorshipStatus(input: string) {
 export function arrayCount<T>(items: T[], callback: (item: T) => boolean) {
   return items.reduce((count, item) => count + Number(callback(item)), 0);
 }
+
+export function getIconUrl(color: string, size: number) {
+  return browser.runtime.getURL(`icon-${color}-${size}.png`);
+}
