@@ -18,12 +18,12 @@
     "message": "Open Bounty Board"
   },
   "twitchCampaignWebhook_messageContent": {
-    "message": "$1 has received a new Twitch Sponsorship and should be available on your Sponsorhip Board if you're eligible!"
+    "message": "$1 has received a new Twitch Campaign and should be available on your Sponsorship Board if you're eligible!"
   },
   "twitchCampaignWebhook_buttonLabel": {
-    "message": "Open Sponsorhip Board"
+    "message": "Open Sponsorship Board"
   },
   "testWebhook_messageContent": {
-    "message": "This is a test webhook sent by $1. If you see this message, the next Twitch Bounties you'll receive will also be shared here."
+    "message": "This is a test webhook sent by $1. If you see this message, the next notifications you'll receive will also be shared here."
   }
 }
