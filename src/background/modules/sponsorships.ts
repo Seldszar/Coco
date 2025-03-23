@@ -1,5 +1,5 @@
 import { BountyStatus } from "~/common/constants";
-import { formatSponsorshipStatus, formatBrand, formatMoney, getIconUrl } from "~/common/helpers";
+import { formatMoney, getIconUrl } from "~/common/helpers";
 import { Sponsorship, ThirdPartySponsorship } from "~/common/types";
 
 import { getSponsorshipChannelSettings, getSponsorships, getThirdPartySponsorships } from "../twitch";
@@ -45,8 +45,8 @@ class SponsorshipModule {
         id: node.id,
         description: node.description,
 
-        status: formatSponsorshipStatus(node.state),
-        brand: formatBrand(node.activities),
+        status: this.formatSponsorshipStatus(node.state),
+        brand: this.formatBrand(node.activities),
 
         get date() {
           switch (this.status) {
@@ -102,6 +102,41 @@ class SponsorshipModule {
       message: sponsorship.brand.name,
       type: "basic",
     });
+  }
+
+  formatBrand(activities: any[]) {
+    let imageUrl = "";
+    let name = "";
+
+    activities.forEach((activity) => {
+      const { advertiser } = activity;
+
+      if (advertiser) {
+        imageUrl ||= advertiser.imageAsset.lightModeURL;
+        name ||= advertiser.name;
+      }
+
+      name ||= activity.advertiserName;
+    });
+
+    return { imageUrl, name };
+  }
+
+  formatSponsorshipStatus(input: string) {
+    switch (input) {
+      case "COMPLETED":
+      case "COMPLETE_PAID":
+      case "CREATOR_FINISHED":
+      case "PENDING_MODERATION":
+      case "PENDING_PAYOUT":
+        return BountyStatus.Completed;
+
+      case "ACTIVE":
+      case "PAUSED":
+        return BountyStatus.Live;
+    }
+
+    return BountyStatus.Available;
   }
 }
 
