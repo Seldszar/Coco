@@ -104,6 +104,12 @@ class SponsorshipModule {
     });
   }
 
+  filterNewSponsorships(newSponsorships: Sponsorship[], oldSponsorships: Sponsorship[]) {
+    return newSponsorships
+      .filter((newSponsorship) => newSponsorship.status === BountyStatus.Available)
+      .filter((newSponsorship) => oldSponsorships.every((oldSponsorship) => newSponsorship.id !== oldSponsorship.id));
+  }
+
   formatBrand(activities: any[]) {
     let imageUrl = "";
     let name = "";

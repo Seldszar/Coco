@@ -99,6 +99,12 @@ class BountyModule {
       type: "basic",
     });
   }
+
+  filterNewBounties(newBounties: Bounty[], oldBounties: Bounty[]) {
+    return newBounties
+      .filter((newBounty) => newBounty.status === BountyStatus.Available)
+      .filter((newBounty) => oldBounties.every((oldBounty) => newBounty.id !== oldBounty.id));
+  }
 }
 
 export const bountyModule = new BountyModule();

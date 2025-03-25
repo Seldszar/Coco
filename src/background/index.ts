@@ -99,43 +99,6 @@ browser.runtime.onMessage.addListener(async (message) => {
   throw new RangeError("Unknown message type");
 });
 
-interface StorageChange<T> {
-  newValue?: T;
-  oldValue?: T;
-}
-
-function isNewBounty(newBounty: Bounty, oldBounties: Bounty[]) {
-  return oldBounties.every((oldBounty) => newBounty.id !== oldBounty.id);
-}
-
-function getNewBounties(change: StorageChange<Bounty[]>) {
-  const { newValue, oldValue } = change;
-
-  if (newValue == null || oldValue == null) {
-    return [];
-  }
-
-  return newValue
-    .filter((value) => value.status === BountyStatus.Available)
-    .filter((value) => isNewBounty(value, oldValue));
-}
-
-function isNewSponsorship(newSponsorship: Sponsorship, oldSponsorships: Sponsorship[]) {
-  return oldSponsorships.every((oldSponsorship) => newSponsorship.id !== oldSponsorship.id);
-}
-
-function getNewSponsorships(change: StorageChange<Sponsorship[]>) {
-  const { newValue, oldValue } = change;
-
-  if (newValue == null || oldValue == null) {
-    return [];
-  }
-
-  return newValue
-    .filter((value) => value.status === BountyStatus.Available)
-    .filter((value) => isNewSponsorship(value, oldValue));
-}
-
 browser.storage.onChanged.addListener(async (changes) => {
   const { settings } = await browser.storage.local.get({
     settings: {
@@ -145,27 +108,35 @@ browser.storage.onChanged.addListener(async (changes) => {
   });
 
   if (changes.bounties) {
-    const bounties = getNewBounties(changes.bounties);
+    const { newValue = [], oldValue = [] } = changes.bounties;
 
-    if (settings.notifications) {
-      bounties.forEach(bountyModule.createNotification);
+    if (newValue.length > 0) {
+      const bounties = bountyModule.filterNewBounties(newValue, oldValue);
+
+      if (settings.notifications) {
+        bounties.forEach(bountyModule.createNotification);
+      }
+
+      settings.webhooks.forEach((webhook) => {
+        bounties.forEach((bounty) => webhookModule.executeBountyWebhook(webhook, bounty));
+      });
     }
-
-    settings.webhooks.forEach((webhook) => {
-      bounties.forEach((bounty) => webhookModule.executeBountyWebhook(webhook, bounty));
-    });
   }
 
   if (changes.sponsorships) {
-    const sponsorships = getNewSponsorships(changes.sponsorships);
+    const { newValue = [], oldValue = [] } = changes.sponsorships;
 
-    if (settings.notifications) {
-      sponsorships.forEach(sponsorshipModule.createNotification);
+    if (newValue.length > 0) {
+      const sponsorships = sponsorshipModule.filterNewSponsorships(newValue, oldValue);
+
+      if (settings.notifications) {
+        sponsorships.forEach(sponsorshipModule.createNotification);
+      }
+
+      settings.webhooks.forEach((webhook) => {
+        sponsorships.forEach((sponsorship) => webhookModule.executeSponsorshipWebhook(webhook, sponsorship));
+      });
     }
-
-    settings.webhooks.forEach((webhook) => {
-      sponsorships.forEach((sponsorship) => webhookModule.executeSponsorshipWebhook(webhook, sponsorship));
-    });
   }
 });
 
