@@ -41,7 +41,7 @@ const recipe = sva({
     },
 
     details: {
-      color: { base: "black/50", _dark: "white/50" },
+      color: { base: "neutral.600", _dark: "neutral.400" },
     },
 
     payout: {},

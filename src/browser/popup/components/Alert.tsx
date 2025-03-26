@@ -1,6 +1,6 @@
 import { ReactNode } from "react";
 
-import { css } from "~/browser/styled-system/css";
+import { Box } from "~/browser/styled-system/jsx";
 
 export interface AlertProps {
   children?: ReactNode;
@@ -8,8 +8,8 @@ export interface AlertProps {
 
 export function Alert(props: AlertProps) {
   return (
-    <div className={css({ bg: { base: "neutral.200", _dark: "neutral.800" }, p: 4, rounded: "md" })}>
+    <Box bg={{ base: "neutral.200", _dark: "neutral.800" }} p="4" rounded="md">
       {props.children}
-    </div>
+    </Box>
   );
 }
