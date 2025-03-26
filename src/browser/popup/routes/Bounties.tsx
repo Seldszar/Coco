@@ -1,13 +1,17 @@
 import { useMemo } from "react";
 import { DefaultParams, RouteComponentProps } from "wouter";
 
-import { useBounties, useSponsorships, useStatus } from "~/browser/common/hooks";
+import { BountyStatus } from "~/common/constants";
+import { getBountyStatus } from "~/common/helpers";
+
+import { formatCurrency } from "~/browser/common/helpers";
+import { useBounties, useSponsorships, useStatus, useThirdPartySponsorships } from "~/browser/common/hooks";
 import { css } from "~/browser/styled-system/css";
 import { Box } from "~/browser/styled-system/jsx";
 
+import { BountyDetails } from "../components/BountyDetails";
 import { BountyList } from "../components/BountyList";
 import { Button } from "../components/Button";
-import { SponsorshipList } from "../components/SponsorshipList";
 
 interface RouteParams extends DefaultParams {
   status: string;
@@ -19,15 +23,18 @@ export function Bounties(props: RouteComponentProps<RouteParams>) {
   const [status] = useStatus();
   const [bounties] = useBounties();
   const [sponsorships] = useSponsorships();
+  const [thirdPartySponsorships] = useThirdPartySponsorships();
+
+  const bountyStatus = useMemo(() => getBountyStatus(params.status), [params.status]);
 
   const filteredBounties = useMemo(
-    () => bounties.filter((bounty) => bounty.status === params.status.toUpperCase()),
-    [bounties, params.status],
+    () => bounties.filter((bounty) => bounty.status === bountyStatus),
+    [bounties, bountyStatus],
   );
 
   const filteredSponsorships = useMemo(
-    () => sponsorships.filter((sponsorship) => sponsorship.status === params.status.toUpperCase()),
-    [sponsorships, params.status],
+    () => sponsorships.filter((sponsorship) => sponsorship.status === bountyStatus),
+    [sponsorships, bountyStatus],
   );
 
   const refresh = () =>
@@ -38,8 +45,51 @@ export function Bounties(props: RouteComponentProps<RouteParams>) {
   if (status) {
     return (
       <Box py="3">
-        <BountyList bounties={filteredBounties} />
-        <SponsorshipList sponsorships={filteredSponsorships} />
+        <BountyList
+          header="Bounties"
+          emptyMessage="No bounties available right now"
+          items={filteredBounties}
+          itemProps={(item) => ({
+            url: item.url,
+            title: item.campaign.title,
+            image: item.campaign.boxArtUrl,
+            payout: formatCurrency({ amount: item.amount, currencyCode: "USD" }),
+            details: <BountyDetails status={item.status} date={item.date} />,
+          })}
+        />
+
+        <BountyList
+          header="Campaigns"
+          emptyMessage="No campaigns available right now"
+          items={filteredSponsorships}
+          itemProps={(item) => ({
+            url: item.url,
+
+            title: item.brand.name,
+            image: item.brand.imageUrl,
+            payout: formatCurrency(item.amount),
+            details: <BountyDetails status={item.status} date={item.date} />,
+          })}
+        />
+
+        {bountyStatus === BountyStatus.Available && (
+          <BountyList
+            header="StreamElements Campaigns"
+            emptyMessage="No StreamElements campaigns available right now"
+            items={thirdPartySponsorships}
+            itemProps={(item) => ({
+              url: item.url,
+              title: item.brand.name,
+              image: item.brand.imageUrl,
+              payout: formatCurrency(item.baseAmount),
+              details: (
+                <>
+                  with <strong>~{formatCurrency(item.conversionAmount)}</strong> per new user
+                </>
+              ),
+            })}
+          />
+        )}
       </Box>
     );
   }

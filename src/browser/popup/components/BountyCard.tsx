@@ -1,9 +1,6 @@
-import { Bounty } from "~/common/types";
+import { ReactNode } from "react";
 
-import { formatCurrency } from "~/browser/common/helpers";
 import { sva } from "~/browser/styled-system/css";
-
-import { BountyDetails } from "./BountyDetails";
 import { Flex } from "~/browser/styled-system/jsx";
 
 const recipe = sva({
@@ -11,25 +8,30 @@ const recipe = sva({
 
   base: {
     root: {
-      bg: { base: "neutral.200", _dark: "neutral.800" },
+      alignItems: "center",
       display: "flex",
-      overflow: "hidden",
-      rounded: "md",
+      gap: 4,
+      px: 4,
+      py: 3,
+
+      _hover: {
+        bg: { base: "neutral.200", _dark: "neutral.800" },
+      },
     },
 
     image: {
       aspectRatio: "square",
       bg: { base: "white", _dark: "black" },
-      h: "64px",
+      h: 14,
       objectFit: "contain",
       objectPosition: "center",
+      rounded: "md",
+      shadow: "lg",
     },
 
     inner: {
       flex: 1,
       minW: 0,
-      px: 4,
-      py: 3,
     },
 
     name: {
@@ -47,32 +49,31 @@ const recipe = sva({
 });
 
 export interface BountyCardProps {
-  bounty: Bounty;
+  url: string;
+  title: string;
+  payout: string;
+  image: string;
+
+  details?: ReactNode;
 }
 
 export function BountyCard(props: BountyCardProps) {
-  const { bounty } = props;
-
-  const classes = recipe({
-    // ...
-  });
+  const classes = recipe();
 
   return (
-    <a className={classes.root} href={bounty.url} target="_blank">
-      <img className={classes.image} src={bounty.campaign.boxArtUrl} alt={bounty.campaign.title} />
+    <a className={classes.root} href={props.url} target="_blank">
+      <img className={classes.image} src={props.image} alt={props.title} />
 
       <div className={classes.inner}>
         <Flex>
-          <h3 className={classes.name} title={bounty.campaign.title}>
-            {bounty.campaign.title}
+          <h3 className={classes.name} title={props.title}>
+            {props.title}
           </h3>
 
-          <strong className={classes.payout}>{formatCurrency({ amount: bounty.amount, currencyCode: "USD" })}</strong>
+          <strong className={classes.payout}>{props.payout}</strong>
         </Flex>
 
-        <p className={classes.details}>
-          <BountyDetails status={bounty.status} date={bounty.date} />
-        </p>
+        <p className={classes.details}>{props.details}</p>
       </div>
     </a>
   );

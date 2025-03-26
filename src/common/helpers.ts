@@ -1,3 +1,5 @@
+import { BountyStatus } from "./constants";
+
 export class Deferred<T> {
   readonly promise: Promise<T>;
 
@@ -25,4 +27,19 @@ export function arrayCount<T>(items: T[], callback: (item: T) => boolean) {
 
 export function getIconUrl(color: string, size: number) {
   return browser.runtime.getURL(`icon-${color}-${size}.png`);
+}
+
+export function getBountyStatus(input: string) {
+  switch (input) {
+    case "available":
+      return BountyStatus.Available;
+
+    case "completed":
+      return BountyStatus.Completed;
+
+    case "live":
+      return BountyStatus.Live;
+  }
+
+  throw new RangeError("Invalid bounty status");
 }
