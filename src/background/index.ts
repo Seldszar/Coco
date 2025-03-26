@@ -1,113 +1,53 @@
-import { BountyBoardStatus, BountyStatus, WebhookType } from "~/common/constants";
-import { countBounties } from "~/common/helpers";
-import { Bounty, Webhook } from "~/common/types";
+import { BountyStatus } from "~/common/constants";
+import { arrayCount, getIconUrl } from "~/common/helpers";
+import { Bounty, Sponsorship, ThirdPartySponsorship } from "~/common/types";
 
 import { applyMigrations } from "./migrations";
-import { getBounties, getBountyBoardSettings, getLogin } from "./twitch";
 
-function getIconUrl(color: string, size: number) {
-  return browser.runtime.getURL(`icon-${color}-${size}.png`);
-}
-
-async function openBountyBoard() {
-  const [tab] = await browser.tabs.query({
-    url: "*://dashboard.twitch.tv/*/bounties*",
-  });
-
-  return tab
-    ? browser.tabs.update(tab.id, { active: true })
-    : browser.tabs.create({ url: "https://dashboard.twitch.tv/bounties" });
-}
-
-async function fetchStatus() {
-  const [{ data }] = await getBountyBoardSettings();
-
-  if (data == null) {
-    return BountyBoardStatus.None;
-  }
-
-  const {
-    user: {
-      bountyBoardSettings: { status },
-    },
-  } = data;
-
-  browser.storage.session.set({
-    status,
-  });
-
-  return status;
-}
-
-async function fetchBounties() {
-  const responses = await getBounties();
-
-  return responses.flatMap<Bounty>(({ data }) => {
-    if (data == null) {
-      return [];
-    }
-
-    const {
-      user: { bountiesPage },
-    } = data;
-
-    return bountiesPage.edges.map(({ node }) => {
-      const { campaign } = node;
-
-      return {
-        id: node.id,
-        status: node.status,
-
-        get date() {
-          switch (node.status) {
-            case BountyStatus.Completed:
-              return Date.parse(node.trackingStoppedAt);
-
-            case BountyStatus.Live:
-              return Date.parse(node.expiresAt);
-          }
-
-          return Date.parse(campaign.endTime);
-        },
-
-        get amount() {
-          switch (node.status) {
-            case BountyStatus.Completed:
-              return node.payoutCents / 100;
-          }
-
-          return node.maximumPayoutCents / 100;
-        },
-
-        campaign: {
-          id: campaign.id,
-          title: campaign.title,
-          sponsor: campaign.sponsor,
-          displayName: campaign.displayName || campaign.game.displayName,
-          boxArtUrl: campaign.boxArtURL || campaign.game.boxArtURL,
-        },
-      };
-    });
-  });
-}
+import { bountyModule } from "./modules/bounties";
+import { sponsorshipModule } from "./modules/sponsorships";
+import { webhookModule } from "./modules/webhooks";
 
 async function refresh() {
   let bounties = new Array<Bounty>();
-  let active = false;
+  let sponsorships = new Array<Sponsorship>();
+  let thirdPartySponsorships = new Array<ThirdPartySponsorship>();
+
+  let enabled = false;
+  let count = 0;
 
   try {
-    const status = await fetchStatus();
+    const status = await bountyModule.fetchBountyBoardStatus();
 
-    if (status === BountyBoardStatus.Accepted) {
-      bounties = await fetchBounties();
-      active = true;
+    if (status) {
+      bounties = bounties.concat(await bountyModule.fetchBounties());
+
+      count += arrayCount(bounties, (item) => item.status === BountyStatus.Available);
+      enabled = true;
     }
-  } catch {} // eslint-disable-line no-empty
+  } catch (error) {
+    console.error("An error occured while fetching bounties", error);
+  }
 
-  const badgeCount = countBounties(bounties, BountyStatus.Available);
-  const color = active ? "purple" : "gray";
+  try {
+    const status = await sponsorshipModule.fetchSponsorshipBoardStatus();
+
+    if (status) {
+      sponsorships = sponsorships.concat(await sponsorshipModule.fetchSponsorships());
+      thirdPartySponsorships = thirdPartySponsorships.concat(await sponsorshipModule.fetchThirdPartySponsorships());
+
+      count += arrayCount(sponsorships, (item) => item.status === BountyStatus.Available);
+      enabled = true;
+    }
+  } catch (error) {
+    console.error("An error occured while fetching sponsorships", error);
+  }
 
   browser.storage.session.set({
+    enabled,
+
+    thirdPartySponsorships,
+    sponsorships,
     bounties,
   });
 
@@ -116,8 +56,10 @@ async function refresh() {
   });
 
   browser.action.setBadgeText({
-    text: badgeCount ? badgeCount.toString() : null,
+    text: count ? count.toString() : null,
   });
+
+  const color = enabled ? "purple" : "gray";
 
   browser.action.setIcon({
     path: {
@@ -127,106 +69,8 @@ async function refresh() {
   });
 
   browser.alarms.create({
-    delayInMinutes: 5,
+    delayInMinutes: 1,
   });
-}
-
-async function formatTestWebhook(webhook: Webhook) {
-  const login = await getLogin();
-
-  switch (webhook.type) {
-    case WebhookType.Discord:
-      return {
-        username: browser.i18n.getMessage("extensionName"),
-        avatar_url: "https://github.com/Seldszar/Coco/raw/main/public/icon-purple-96.png",
-        content: browser.i18n.getMessage("testWebhook_messageContent", login),
-      };
-
-    case WebhookType.Slack:
-      return {
-        text: browser.i18n.getMessage("testWebhook_messageContent", login),
-      };
-  }
-
-  throw new RangeError("Webhook type not supported");
-}
-
-async function formatBountyWebhook(webhook: Webhook, bounty: Bounty) {
-  const login = await getLogin();
-
-  switch (webhook.type) {
-    case WebhookType.Discord:
-      return {
-        username: browser.i18n.getMessage("extensionName"),
-        avatar_url: "https://github.com/Seldszar/Coco/raw/main/public/icon-purple-96.png",
-        content: browser.i18n.getMessage("bountyWebhook_messageContent", login),
-        embeds: [
-          {
-            title: bounty.campaign.sponsor,
-            description: bounty.campaign.title,
-            url: "https://dashboard.twitch.tv/bounties",
-            color: "11032055",
-            thumbnail: {
-              url: bounty.campaign.boxArtUrl,
-            },
-            footer: {
-              text: browser.i18n.getMessage("extensionName"),
-              icon_url: "https://github.com/Seldszar/Coco/raw/main/public/icon-purple-32.png",
-            },
-          },
-        ],
-      };
-
-    case WebhookType.Slack:
-      return {
-        text: browser.i18n.getMessage("bountyWebhook_messageContent", login),
-        blocks: [
-          {
-            type: "actions",
-            elements: [
-              {
-                type: "section",
-                text: {
-                  type: "mrkdwn",
-                  text: `*<https://dashboard.twitch.tv/bounties|${bounty.campaign.sponsor}>*\n${bounty.campaign.title}`,
-                },
-                accessory: {
-                  type: "image",
-                  image_url: bounty.campaign.boxArtUrl,
-                  alt_text: bounty.campaign.title,
-                },
-              },
-              {
-                type: "button",
-                url: "https://dashboard.twitch.tv/bounties",
-                text: {
-                  type: "plain_text",
-                  text: browser.i18n.getMessage("bountyWebhook_buttonLabel"),
-                },
-              },
-            ],
-          },
-        ],
-      };
-  }
-
-  throw new RangeError("Webhook type not supported");
-}
-
-async function executeWebhook(webhook: Webhook, body: any) {
-  return fetch(webhook.url, {
-    headers: [["Content-Type", "application/json"]],
-    body: JSON.stringify(body),
-    method: "POST",
-  });
-}
-
-async function executeTestWebhook(webhook: Webhook) {
-  return executeWebhook(webhook, await formatTestWebhook(webhook));
-}
-
-async function executeBountyWebhook(webhook: Webhook, bounty: Bounty) {
-  return executeWebhook(webhook, await formatBountyWebhook(webhook, bounty));
 }
 
 async function checkAlarm() {
@@ -240,10 +84,13 @@ async function checkAlarm() {
 browser.runtime.onMessage.addListener(async (message) => {
   switch (message.type) {
     case "executeTestWebhook":
-      return executeTestWebhook(message.data);
+      return webhookModule.executeTestWebhook(message.data);
 
     case "openBountyBoard":
-      return openBountyBoard();
+      return bountyModule.openBountyBoard();
+
+    case "openSponsorshipBoard":
+      return sponsorshipModule.openSponsorshipBoard();
 
     case "refresh":
       return refresh();
@@ -253,18 +100,6 @@ browser.runtime.onMessage.addListener(async (message) => {
 });
 
 browser.storage.onChanged.addListener(async (changes) => {
-  const { bounties } = changes;
-
-  if (bounties == null) {
-    return;
-  }
-
-  const { newValue, oldValue } = bounties;
-
-  if (oldValue == null) {
-    return;
-  }
-
   const { settings } = await browser.storage.local.get({
     settings: {
       notifications: false,
@@ -272,30 +107,37 @@ browser.storage.onChanged.addListener(async (changes) => {
     },
   });
 
-  const newBounties = newValue.filter(
-    (newItem: Bounty) =>
-      newItem.status === BountyStatus.Available &&
-      oldValue.every((oldItem: Bounty) => newItem.campaign.id !== oldItem.campaign.id),
-  );
+  if (changes.bounties) {
+    const { newValue = [], oldValue = [] } = changes.bounties;
 
-  if (newBounties.length === 0) {
-    return;
-  }
+    if (newValue.length > 0) {
+      const bounties = bountyModule.filterNewBounties(newValue, oldValue);
 
-  if (settings.notifications) {
-    newBounties.forEach((bounty: Bounty) => {
-      browser.notifications.create({
-        iconUrl: getIconUrl("purple", 96),
-        title: browser.i18n.getMessage("notificationTitle_newBountyAvailable"),
-        message: bounty.campaign.title,
-        type: "basic",
+      if (settings.notifications) {
+        bounties.forEach(bountyModule.createNotification);
+      }
+
+      settings.webhooks.forEach((webhook) => {
+        bounties.forEach((bounty) => webhookModule.executeBountyWebhook(webhook, bounty));
       });
-    });
+    }
   }
 
-  settings.webhooks.forEach((webhook: Webhook) => {
-    newBounties.forEach((bounty: Bounty) => executeBountyWebhook(webhook, bounty));
-  });
+  if (changes.sponsorships) {
+    const { newValue = [], oldValue = [] } = changes.sponsorships;
+
+    if (newValue.length > 0) {
+      const sponsorships = sponsorshipModule.filterNewSponsorships(newValue, oldValue);
+
+      if (settings.notifications) {
+        sponsorships.forEach(sponsorshipModule.createNotification);
+      }
+
+      settings.webhooks.forEach((webhook) => {
+        sponsorships.forEach((sponsorship) => webhookModule.executeSponsorshipWebhook(webhook, sponsorship));
+      });
+    }
+  }
 });
 
 browser.runtime.onInstalled.addListener(async () => {
@@ -306,7 +148,16 @@ browser.runtime.onInstalled.addListener(async () => {
 browser.runtime.onStartup.addListener(refresh);
 browser.alarms.onAlarm.addListener(refresh);
 
-browser.action.onClicked.addListener(openBountyBoard);
-browser.notifications.onClicked.addListener(openBountyBoard);
+browser.notifications.onClicked.addListener((notificationId) => {
+  const [type] = notificationId.split(":");
+
+  switch (type) {
+    case "bounty":
+      return bountyModule.openBountyBoard();
+
+    case "sponsorship":
+      return sponsorshipModule.openSponsorshipBoard();
+  }
+});
 
 checkAlarm();

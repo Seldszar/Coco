@@ -1,9 +1,7 @@
-import { Bounty } from "~/common/types";
+import { ReactNode } from "react";
 
-import { formatCurrency } from "~/browser/common/helpers";
 import { sva } from "~/browser/styled-system/css";
-
-import { BountyDetails } from "./BountyDetails";
+import { Flex } from "~/browser/styled-system/jsx";
 
 const recipe = sva({
   slots: ["root", "image", "inner", "name", "details", "payout"],
@@ -13,7 +11,6 @@ const recipe = sva({
       alignItems: "center",
       display: "flex",
       gap: 4,
-      pos: "relative",
       px: 4,
       py: 3,
 
@@ -23,11 +20,13 @@ const recipe = sva({
     },
 
     image: {
-      aspectRatio: "portrait",
-      bg: "black",
-      objectFit: "cover",
+      aspectRatio: "square",
+      bg: { base: "white", _dark: "black" },
+      h: 14,
+      objectFit: "contain",
       objectPosition: "center",
-      w: 12,
+      rounded: "md",
+      shadow: "lg",
     },
 
     inner: {
@@ -36,6 +35,7 @@ const recipe = sva({
     },
 
     name: {
+      flex: 1,
       fontWeight: "bold",
       truncate: true,
     },
@@ -49,35 +49,32 @@ const recipe = sva({
 });
 
 export interface BountyCardProps {
-  bounty: Bounty;
+  url: string;
+  title: string;
+  payout: string;
+  image: string;
+
+  details?: ReactNode;
 }
 
 export function BountyCard(props: BountyCardProps) {
-  const { bounty } = props;
-
-  const classes = recipe({
-    // ...
-  });
+  const classes = recipe();
 
   return (
-    <a
-      className={classes.root}
-      href={`https://dashboard.twitch.tv/bounties/${bounty.id}`}
-      target="_blank"
-    >
-      <img className={classes.image} src={bounty.campaign.boxArtUrl} alt={bounty.campaign.title} />
+    <a className={classes.root} href={props.url} target="_blank">
+      <img className={classes.image} src={props.image} alt={props.title} />
 
       <div className={classes.inner}>
-        <h3 className={classes.name} title={bounty.campaign.title}>
-          {bounty.campaign.title}
-        </h3>
+        <Flex>
+          <h3 className={classes.name} title={props.title}>
+            {props.title}
+          </h3>
 
-        <p className={classes.details}>
-          <BountyDetails bounty={bounty} />
-        </p>
+          <strong className={classes.payout}>{props.payout}</strong>
+        </Flex>
+
+        <p className={classes.details}>{props.details}</p>
       </div>
-
-      <strong className={classes.payout}>{formatCurrency(bounty.amount)}</strong>
     </a>
   );
 }

@@ -1,8 +1,10 @@
-import { BountyStatus } from "~/common/constants";
 import { QueryInput, QueryOperation, QueryResult } from "~/common/types";
 
-import BountyBoardSettings from "./queries/BountyBoardSettings.gql";
 import BountiesPage from "./queries/BountiesPage.gql";
+import BountyBoardSettings from "./queries/BountyBoardSettings.gql";
+import SponsorshipChannelSettings from "./queries/SponsorshipChannelSettings.gql";
+import Sponsorships from "./queries/Sponsorships.gql";
+import ThirdPartySponsorships from "./queries/ThirdPartySponsorships.gql";
 
 async function getCookieValue(name: string) {
   const cookie = await browser.cookies.get({
@@ -59,9 +61,7 @@ async function getIntegrityToken() {
 async function executeOperations(operations: QueryOperation[], cachedResults: QueryResult[]) {
   const results = await request<QueryResult[]>("gql", {
     method: "POST",
-    body: JSON.stringify(
-      operations.map(({ retry, input: { query, ...rest } }) => (retry ? { query, ...rest } : rest)),
-    ),
+    body: JSON.stringify(operations.map(({ retry, input: { query, ...rest } }) => (retry ? { query, ...rest } : rest))),
     headers: {
       "Client-Integrity": await getIntegrityToken(),
     },
@@ -123,7 +123,8 @@ export async function getBounties() {
       ...BountiesPage,
 
       variables: {
-        status: BountyStatus.Available,
+        status: "AVAILABLE",
+        first: 100,
         login,
       },
     },
@@ -131,7 +132,8 @@ export async function getBounties() {
       ...BountiesPage,
 
       variables: {
-        status: BountyStatus.Completed,
+        status: "COMPLETED",
+        first: 100,
         login,
       },
     },
@@ -139,8 +141,67 @@ export async function getBounties() {
       ...BountiesPage,
 
       variables: {
-        status: BountyStatus.Live,
+        status: "LIVE",
+        first: 100,
         login,
+      },
+    },
+  ]);
+}
+
+export async function getSponsorshipChannelSettings() {
+  const login = await getLogin();
+
+  return query([
+    {
+      ...SponsorshipChannelSettings,
+
+      variables: {
+        login,
+      },
+    },
+  ]);
+}
+
+export async function getSponsorships() {
+  return query([
+    {
+      ...Sponsorships,
+
+      variables: {
+        query: {
+          stateCategory: "INVITATION",
+        },
+      },
+    },
+    {
+      ...Sponsorships,
+
+      variables: {
+        query: {
+          stateCategory: "ACTIVE",
+        },
+      },
+    },
+    {
+      ...Sponsorships,
+
+      variables: {
+        query: {
+          stateCategory: "COMPLETED",
+        },
+      },
+    },
+  ]);
+}
+
+export async function getThirdPartySponsorships() {
+  return query([
+    {
+      ...ThirdPartySponsorships,
+
+      variables: {
+        first: 100,
       },
     },
   ]);

@@ -3,11 +3,6 @@ export enum WebhookType {
   Slack = "SLACK",
 }
 
-export enum BountyBoardStatus {
-  Accepted = "ACCEPTED",
-  None = "NONE",
-}
-
 export enum BountyStatus {
   Available = "AVAILABLE",
   Live = "LIVE",

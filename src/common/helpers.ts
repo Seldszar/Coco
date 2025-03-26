@@ -1,4 +1,4 @@
-import { Bounty } from "./types";
+import { BountyStatus } from "./constants";
 
 export class Deferred<T> {
   readonly promise: Promise<T>;
@@ -14,6 +14,32 @@ export class Deferred<T> {
   }
 }
 
-export function countBounties(bounties: Bounty[], status: string) {
-  return bounties.reduce((count, bounty) => count + Number(bounty.status === status), 0);
+export function formatMoney(input: any) {
+  return {
+    amount: input.amount / Math.pow(10, input.minorUnits),
+    currencyCode: input.currencyCode,
+  };
+}
+
+export function arrayCount<T>(items: T[], callback: (item: T) => boolean) {
+  return items.reduce((count, item) => count + Number(callback(item)), 0);
+}
+
+export function getIconUrl(color: string, size: number) {
+  return browser.runtime.getURL(`icon-${color}-${size}.png`);
+}
+
+export function getBountyStatus(input: string) {
+  switch (input) {
+    case "available":
+      return BountyStatus.Available;
+
+    case "completed":
+      return BountyStatus.Completed;
+
+    case "live":
+      return BountyStatus.Live;
+  }
+
+  throw new RangeError("Invalid bounty status");
 }

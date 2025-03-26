@@ -1,0 +1,24 @@
+query Coco_ThirdPartySponsorships($first: Int!) {
+  thirdPartySponsorshipOffers(first: $first) {
+    edges {
+      node {
+        brandName
+        brandImageURL
+        thirdPartyBrokerOfferURL
+        description
+
+        basePay {
+          currencyCode
+          minorUnits
+          amount
+        }
+
+        averageEarningsPerConvertedUser {
+          currencyCode
+          minorUnits
+          amount
+        }
+      }
+    }
+  }
+}

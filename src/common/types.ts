@@ -1,5 +1,10 @@
 import { BountyStatus, WebhookType } from "./constants";
 
+export interface Money {
+  currencyCode: string;
+  amount: number;
+}
+
 export interface BountyCampaign {
   id: string;
   title: string;
@@ -10,10 +15,34 @@ export interface BountyCampaign {
 
 export interface Bounty {
   id: string;
-  status: BountyStatus;
   date: number;
   amount: number;
+  status: BountyStatus;
   campaign: BountyCampaign;
+  url: string;
+}
+
+export interface SponsorshipBrand {
+  imageUrl: string;
+  name: string;
+}
+
+export interface Sponsorship {
+  id: string;
+  date: number;
+  description: string;
+  status: BountyStatus;
+  brand: SponsorshipBrand;
+  amount: Money;
+  url: string;
+}
+
+export interface ThirdPartySponsorship {
+  id: string;
+  url: string;
+  brand: SponsorshipBrand;
+  conversionAmount: Money;
+  baseAmount: Money;
 }
 
 export interface Webhook {

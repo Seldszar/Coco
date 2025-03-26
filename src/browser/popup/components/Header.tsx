@@ -1,16 +1,11 @@
-import {
-  IconChevronDown,
-  IconChevronUp,
-  IconExternalLink,
-  IconHeart,
-  IconSettings,
-} from "@tabler/icons-react";
+import { IconChevronDown, IconChevronUp, IconExternalLink, IconHeart, IconSettings } from "@tabler/icons-react";
 import { useLocation } from "wouter";
 
 import { BountyStatus } from "~/common/constants";
-import { countBounties } from "~/common/helpers";
+import { arrayCount } from "~/common/helpers";
 
-import { useBounties, useToggle } from "~/browser/common/hooks";
+import { useBounties, useSponsorships, useToggle } from "~/browser/common/hooks";
+
 import { sva } from "~/browser/styled-system/css";
 import { Grid, styled } from "~/browser/styled-system/jsx";
 
@@ -76,6 +71,7 @@ export interface HeaderProps {
 }
 
 export function Header(props: HeaderProps) {
+  const [sponsorships] = useSponsorships();
   const [bounties] = useBounties();
 
   const [isMenuOpen, toggleMenu] = useToggle(false);
@@ -85,9 +81,13 @@ export function Header(props: HeaderProps) {
     isMenuOpen,
   });
 
-  const openBountyBoard = () =>
+  const getBadgeCount = (status: BountyStatus) =>
+    arrayCount(sponsorships, (sponsorship) => sponsorship.status === status) +
+    arrayCount(bounties, (bounty) => bounty.status === status);
+
+  const openSponsorshipBoard = () =>
     browser.runtime.sendMessage({
-      type: "openBountyBoard",
+      type: "openSponsorshipBoard",
     });
 
   return (
@@ -97,12 +97,12 @@ export function Header(props: HeaderProps) {
           className={classes.tabs}
           items={[
             {
-              badgeText: countBounties(bounties, BountyStatus.Available),
+              badgeText: getBadgeCount(BountyStatus.Available),
               href: "/bounties/available",
               title: "Available",
             },
             {
-              badgeText: countBounties(bounties, BountyStatus.Live),
+              badgeText: getBadgeCount(BountyStatus.Live),
               href: "/bounties/live",
               title: "In Queue",
             },
@@ -121,8 +121,8 @@ export function Header(props: HeaderProps) {
       {isMenuOpen && (
         <>
           <Grid pt={3} px={4}>
-            <Button color="purple" onClick={() => openBountyBoard()}>
-              Open Bounty Board
+            <Button color="purple" onClick={() => openSponsorshipBoard()}>
+              Open Sponsorship Board
             </Button>
           </Grid>
 

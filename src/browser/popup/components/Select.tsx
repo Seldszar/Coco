@@ -33,9 +33,7 @@ export function Select<T extends string | number>(props: SelectProps<T>) {
         ))}
       </select>
 
-      <IconSelector
-        className={css({ alignSelf: "center", pointerEvents: "none", pos: "absolute", right: 2 })}
-      />
+      <IconSelector className={css({ alignSelf: "center", pointerEvents: "none", pos: "absolute", right: 2 })} />
     </label>
   );
 }

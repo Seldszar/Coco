@@ -1,9 +1,15 @@
-query Coco_BountiesPage($login: String!, $status: String!) {
+query Coco_BountiesPage($login: String!, $status: String!, $first: Int!) {
   user(login: $login) {
-    bountiesPage(status: $status, first: 20) {
+    bountiesPage(status: $status, first: $first) {
       edges {
         node {
           id
+          status
+          expiresAt
+          maximumPayoutCents
+          trackingStoppedAt
+          payoutCents
+
           campaign {
             id
             title
@@ -11,16 +17,12 @@ query Coco_BountiesPage($login: String!, $status: String!) {
             displayName
             boxArtURL
             endTime
+
             game {
               displayName
               boxArtURL(width: 85, height: 113)
             }
           }
-          status
-          expiresAt
-          maximumPayoutCents
-          payoutCents
-          trackingStoppedAt
         }
       }
     }

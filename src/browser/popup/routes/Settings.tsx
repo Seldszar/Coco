@@ -16,9 +16,7 @@ export function Settings() {
         <FormField label="Theme">
           <Select
             value={settings.theme}
-            onChange={(event) =>
-              updateSettings((value) => ({ ...value, theme: event.currentTarget.value }))
-            }
+            onChange={(event) => updateSettings((value) => ({ ...value, theme: event.currentTarget.value }))}
             options={[
               { value: "light", label: "Light" },
               { value: "dark", label: "Dark" },
@@ -30,9 +28,7 @@ export function Settings() {
       <Section header="Notifications">
         <Switch
           checked={settings.notifications}
-          onChange={(event) =>
-            updateSettings((value) => ({ ...value, notifications: event.currentTarget.checked }))
-          }
+          onChange={(event) => updateSettings((value) => ({ ...value, notifications: event.currentTarget.checked }))}
         >
           Enable Notifications
         </Switch>

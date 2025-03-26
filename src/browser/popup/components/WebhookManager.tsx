@@ -98,9 +98,7 @@ function NewButton(props: NewButtonProps) {
       <Box bg={{ base: "neutral.200", _dark: "neutral.800" }} p={6} rounded="md">
         <Form
           onCancel={() => setOpen(false)}
-          onSubmit={(value) => (
-            props.onSubmit({ ...value, id: crypto.randomUUID() }), setOpen(false)
-          )}
+          onSubmit={(value) => (props.onSubmit({ ...value, id: crypto.randomUUID() }), setOpen(false))}
         />
       </Box>
     );
@@ -125,12 +123,7 @@ export function WebhookManager() {
       {settings.webhooks.length > 0 && (
         <Box spaceY="2">
           {settings.webhooks.map((webhook, index) => (
-            <Flex
-              key={index}
-              bg={{ base: "neutral.200", _dark: "neutral.800" }}
-              overflow="hidden"
-              rounded="md"
-            >
+            <Flex key={index} bg={{ base: "neutral.200", _dark: "neutral.800" }} overflow="hidden" rounded="md">
               <Box flex="1" p="4" pr="0">
                 <Box
                   color={{ base: "neutral.600", _dark: "neutral.400" }}
@@ -170,9 +163,7 @@ export function WebhookManager() {
       )}
 
       <NewButton
-        onSubmit={(webhook) =>
-          setSettings((value) => ({ ...value, webhooks: value.webhooks.concat(webhook) }))
-        }
+        onSubmit={(webhook) => setSettings((value) => ({ ...value, webhooks: value.webhooks.concat(webhook) }))}
       />
     </Box>
   );

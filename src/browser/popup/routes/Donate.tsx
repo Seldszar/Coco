@@ -11,8 +11,8 @@ export function Donate() {
       <Paragraph mb={8}>
         <p>Coco is a free extension that does not collect or sell personal user data.</p>
         <p>
-          Donations, although optional but greatly appreciated, help support my work and encourage
-          me to offer the best quality products possible.
+          Donations, although optional but greatly appreciated, help support my work and encourage me to offer the best
+          quality products possible.
         </p>
         <p>Thank you for your support!</p>
       </Paragraph>

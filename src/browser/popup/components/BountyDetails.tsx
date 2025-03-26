@@ -1,18 +1,16 @@
-import { Bounty } from "~/common/types";
-
-import { formatDateTime } from "~/browser/common/helpers";
 import { BountyStatus } from "~/common/constants";
 
+import { formatDateTime } from "~/browser/common/helpers";
+
 export interface BountyDetailsProps {
-  bounty: Bounty;
+  status: BountyStatus;
+  date: number;
 }
 
 export function BountyDetails(props: BountyDetailsProps) {
-  const { bounty } = props;
+  const dateString = formatDateTime(props.date);
 
-  const dateString = formatDateTime(bounty.date);
-
-  switch (bounty.status) {
+  switch (props.status) {
     case BountyStatus.Completed:
       return `Completed at ${dateString}`;
 
