@@ -85,9 +85,9 @@ export function Header(props: HeaderProps) {
     arrayCount(sponsorships, (sponsorship) => sponsorship.status === status) +
     arrayCount(bounties, (bounty) => bounty.status === status);
 
-  const openBountyBoard = () =>
+  const openSponsorshipBoard = () =>
     browser.runtime.sendMessage({
-      type: "openBountyBoard",
+      type: "openSponsorshipBoard",
     });
 
   return (
@@ -121,8 +121,8 @@ export function Header(props: HeaderProps) {
       {isMenuOpen && (
         <>
           <Grid pt={3} px={4}>
-            <Button color="purple" onClick={() => openBountyBoard()}>
-              Open Bounty Board
+            <Button color="purple" onClick={() => openSponsorshipBoard()}>
+              Open Sponsorship Board
             </Button>
           </Grid>
 
