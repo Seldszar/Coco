@@ -69,7 +69,7 @@ async function refresh() {
   });
 
   browser.alarms.create({
-    delayInMinutes: 5,
+    delayInMinutes: 1,
   });
 }
 
