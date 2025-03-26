@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.0](https://github.com/Seldszar/Coco/compare/v1.4.0...v1.5.0) (2025-03-26)
+
+
+### Features
+
+* sponsorships ([#14](https://github.com/Seldszar/Coco/issues/14)) ([e8b721d](https://github.com/Seldszar/Coco/commit/e8b721dd7e75e1dcbe6e94b94589041d09914c10))
+
 ## [1.4.0](https://github.com/Seldszar/Coco/compare/v1.3.2...v1.4.0) (2025-03-08)
 
 
