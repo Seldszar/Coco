@@ -68,17 +68,10 @@ async function refresh() {
     },
   });
 
-  browser.alarms.create({
+  browser.alarms.clearAll();
+  browser.alarms.create("refresh", {
     delayInMinutes: 1,
   });
-}
-
-async function checkAlarm() {
-  if (await browser.alarms.get()) {
-    return;
-  }
-
-  refresh();
 }
 
 browser.runtime.onMessage.addListener(async (message) => {
@@ -108,9 +101,9 @@ browser.storage.onChanged.addListener(async (changes) => {
   });
 
   if (changes.bounties) {
-    const { newValue = [], oldValue = [] } = changes.bounties;
+    const { newValue = [], oldValue } = changes.bounties;
 
-    if (newValue.length > 0) {
+    if (oldValue) {
       const bounties = bountyModule.filterNewBounties(newValue, oldValue);
 
       if (settings.notifications) {
@@ -124,9 +117,9 @@ browser.storage.onChanged.addListener(async (changes) => {
   }
 
   if (changes.sponsorships) {
-    const { newValue = [], oldValue = [] } = changes.sponsorships;
+    const { newValue = [], oldValue } = changes.sponsorships;
 
-    if (newValue.length > 0) {
+    if (oldValue) {
       const sponsorships = sponsorshipModule.filterNewSponsorships(newValue, oldValue);
 
       if (settings.notifications) {
@@ -160,4 +153,4 @@ browser.notifications.onClicked.addListener((notificationId) => {
   }
 });
 
-checkAlarm();
+refresh();
