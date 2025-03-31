@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.5.1](https://github.com/Seldszar/Coco/compare/v1.5.0...v1.5.1) (2025-03-31)
+
+
+### Bug Fixes
+
+* background ([2ca797c](https://github.com/Seldszar/Coco/commit/2ca797cb17a7f5553821d2ca21be097bfaf6f1b8))
+
 ## [1.5.0](https://github.com/Seldszar/Coco/compare/v1.4.0...v1.5.0) (2025-03-26)
 
 
