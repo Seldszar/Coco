@@ -1,14 +1,9 @@
 const fs = require("node:fs");
 const path = require("node:path");
 
-const { EnvironmentPlugin, ProvidePlugin } = require("webpack");
-const { merge } = require("webpack-merge");
-
+const { CopyRspackPlugin, EnvironmentPlugin, HtmlRspackPlugin, ProvidePlugin } = require("@rspack/core");
 const { EntryWrapperPlugin } = require("@seldszar/yael");
-
-const CopyWebpackPlugin = require("copy-webpack-plugin");
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
-const HtmlWebpackPlugin = require("html-webpack-plugin");
+const { merge } = require("webpack-merge");
 
 const localeReplacements = [
   {
@@ -36,21 +31,21 @@ module.exports = (env, argv) => {
       rules: [
         {
           test: /\.gql$/,
-          exclude: /node_modules/,
           loader: path.resolve(".webpack/loaders/graphql"),
         },
         {
           test: /\.tsx?$/,
-          exclude: /node_modules/,
           use: {
-            loader: "swc-loader",
+            loader: "builtin:swc-loader",
             options: {
-              env: {
-                targets: "last 2 years",
-              },
               jsc: {
+                parser: {
+                  syntax: "typescript",
+                  tsx: true,
+                },
                 transform: {
                   react: {
+                    development: isDevelopment,
                     runtime: "automatic",
                   },
                 },
@@ -67,7 +62,7 @@ module.exports = (env, argv) => {
       new ProvidePlugin({
         browser: "webextension-polyfill",
       }),
-      new CopyWebpackPlugin({
+      new CopyRspackPlugin({
         patterns: [
           {
             from: "**/*",
@@ -92,9 +87,7 @@ module.exports = (env, argv) => {
               return true;
             },
             to(pathData) {
-              const relativePath = path
-                .relative(pathData.context, pathData.absoluteFilename)
-                .replace(/\\/g, "/");
+              const relativePath = path.relative(pathData.context, pathData.absoluteFilename).replace(/\\/g, "/");
 
               return `_locales/${localeReplacements.reduce(
                 (result, { source, target }) => result.replace(source, target),
@@ -105,12 +98,6 @@ module.exports = (env, argv) => {
         ],
       }),
     ],
-    cache: {
-      type: "filesystem",
-      buildDependencies: {
-        config: [__filename],
-      },
-    },
   };
 
   return [
@@ -125,27 +112,23 @@ module.exports = (env, argv) => {
       entry: {
         popup: "./src/browser/popup/main.tsx",
       },
+      experiments: {
+        css: true,
+      },
       module: {
         rules: [
           {
             test: /\.css$/,
-            use: [MiniCssExtractPlugin.loader, "css-loader", "postcss-loader"],
+            use: "postcss-loader",
           },
         ],
       },
-      optimization: {
-        splitChunks: {
-          name: "commons",
-          chunks: "all",
-        },
-      },
       plugins: [
-        new MiniCssExtractPlugin(),
         new EntryWrapperPlugin({
           template: "./src/browser/entry-template.tsx",
           test: /\.tsx$/,
         }),
-        new HtmlWebpackPlugin({
+        new HtmlRspackPlugin({
           template: "./src/browser/entry-template.html",
           filename: "popup.html",
           chunks: ["popup"],
