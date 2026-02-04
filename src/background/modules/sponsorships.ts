@@ -46,7 +46,7 @@ class SponsorshipModule {
         description: node.description,
 
         status: this.formatSponsorshipStatus(node.state),
-        brand: this.formatBrand(node.activities),
+        brand: this.formatBrand(node.advertiser),
 
         get date() {
           switch (this.status) {
@@ -61,7 +61,9 @@ class SponsorshipModule {
         },
 
         get amount() {
-          return formatMoney(this.status === BountyStatus.Completed ? node.paymentActual : node.paymentPotential);
+          return formatMoney(
+            this.status === BountyStatus.Completed ? node.self.paymentActual : node.self.paymentPotential,
+          );
         },
 
         get url() {
@@ -110,20 +112,9 @@ class SponsorshipModule {
       .filter((newSponsorship) => oldSponsorships.every((oldSponsorship) => newSponsorship.id !== oldSponsorship.id));
   }
 
-  formatBrand(activities: any[]) {
-    let imageUrl = "";
-    let name = "";
-
-    activities.forEach((activity) => {
-      const { advertiser } = activity;
-
-      if (advertiser) {
-        imageUrl ||= advertiser.imageAsset.lightModeURL;
-        name ||= advertiser.name;
-      }
-
-      name ||= activity.advertiserName;
-    });
+  formatBrand(advertiser: any) {
+    const imageUrl = advertiser.imageAsset.lightModeURL;
+    const name = advertiser.name;
 
     return { imageUrl, name };
   }

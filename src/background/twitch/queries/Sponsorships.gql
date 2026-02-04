@@ -7,51 +7,31 @@ query Coco_Sponsorships($query: SponsorshipInstanceQuery) {
         acceptBy
         description
 
-        activities {
-          ... on ChannelSkin {
-            advertiser {
-              name
+        advertiser {
+          name
 
-              imageAsset {
-                lightModeURL
-                darkModeURL
-              }
-            }
-          }
-
-          ... on HostReadAd {
-            advertiserName
-          }
-
-          ... on SubsidizedSubscriptions {
-            advertiser {
-              name
-
-              imageAsset {
-                lightModeURL
-                darkModeURL
-              }
-            }
-          }
-
-          activation {
-            startsAt
-            endsAt
+          imageAsset {
+            lightModeURL
+            darkModeURL
           }
         }
 
-        paymentActual {
-          currencyCode
-          minorUnits
-          amount
-        }
+        self {
+          paymentActual {
+            ...money
+          }
 
-        paymentPotential {
-          currencyCode
-          minorUnits
-          amount
+          paymentPotential {
+            ...money
+          }
         }
       }
     }
   }
+}
+
+fragment money on Money {
+  currencyCode
+  minorUnits
+  amount
 }
