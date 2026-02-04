@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.6.0](https://github.com/Seldszar/Coco/compare/v1.5.1...v1.6.0) (2026-02-04)
+
+
+### Features
+
+* remove bounties ([e9be64a](https://github.com/Seldszar/Coco/commit/e9be64ac244aefc965705bbed14e0c0cd9cc4aaf))
+
+
+### Bug Fixes
+
+* sponsorships ([58e45b0](https://github.com/Seldszar/Coco/commit/58e45b0ee90e05f3aaf5107e9ab0e5e539f0d26d))
+
 ## [1.5.1](https://github.com/Seldszar/Coco/compare/v1.5.0...v1.5.1) (2025-03-31)
 
 
