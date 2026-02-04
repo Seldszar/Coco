@@ -8,17 +8,19 @@ query Coco_ThirdPartySponsorships($first: Int!) {
         description
 
         basePay {
-          currencyCode
-          minorUnits
-          amount
+          ...money
         }
 
         averageEarningsPerConvertedUser {
-          currencyCode
-          minorUnits
-          amount
+          ...money
         }
       }
     }
   }
+}
+
+fragment money on Money {
+  currencyCode
+  minorUnits
+  amount
 }
