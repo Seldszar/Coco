@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Storage } from "webextension-polyfill";
 import { useSearch } from "wouter";
 
-import { Bounty, Sponsorship, ThirdPartySponsorship, Webhook } from "~/common/types";
+import { Sponsorship, ThirdPartySponsorship, Webhook } from "~/common/types";
 
 export function useSearchParams() {
   const search = useSearch();
@@ -65,10 +65,6 @@ export function useSettings() {
 
 export function useStatus() {
   return useStorage("session", "enabled", false);
-}
-
-export function useBounties() {
-  return useStorage("session", "bounties", new Array<Bounty>());
 }
 
 export function useSponsorships() {

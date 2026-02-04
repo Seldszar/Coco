@@ -1,6 +1,5 @@
 import { QueryInput, QueryOperation, QueryResult } from "~/common/types";
 
-import BountiesPage from "./queries/BountiesPage.gql";
 import BountyBoardSettings from "./queries/BountyBoardSettings.gql";
 import SponsorshipChannelSettings from "./queries/SponsorshipChannelSettings.gql";
 import Sponsorships from "./queries/Sponsorships.gql";
@@ -109,40 +108,6 @@ export async function getBountyBoardSettings() {
       ...BountyBoardSettings,
 
       variables: {
-        login,
-      },
-    },
-  ]);
-}
-
-export async function getBounties() {
-  const login = await getLogin();
-
-  return query([
-    {
-      ...BountiesPage,
-
-      variables: {
-        status: "AVAILABLE",
-        first: 100,
-        login,
-      },
-    },
-    {
-      ...BountiesPage,
-
-      variables: {
-        status: "COMPLETED",
-        first: 100,
-        login,
-      },
-    },
-    {
-      ...BountiesPage,
-
-      variables: {
-        status: "LIVE",
-        first: 100,
         login,
       },
     },

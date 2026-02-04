@@ -5,7 +5,7 @@ import { BountyStatus } from "~/common/constants";
 import { getBountyStatus } from "~/common/helpers";
 
 import { formatCurrency } from "~/browser/common/helpers";
-import { useBounties, useSponsorships, useStatus, useThirdPartySponsorships } from "~/browser/common/hooks";
+import { useSponsorships, useStatus, useThirdPartySponsorships } from "~/browser/common/hooks";
 
 import { css } from "~/browser/styled-system/css";
 import { Box } from "~/browser/styled-system/jsx";
@@ -22,16 +22,10 @@ export function Bounties(props: RouteComponentProps<RouteParams>) {
   const { params } = props;
 
   const [status] = useStatus();
-  const [bounties] = useBounties();
   const [sponsorships] = useSponsorships();
   const [thirdPartySponsorships] = useThirdPartySponsorships();
 
   const bountyStatus = useMemo(() => getBountyStatus(params.status), [params.status]);
-
-  const filteredBounties = useMemo(
-    () => bounties.filter((bounty) => bounty.status === bountyStatus),
-    [bounties, bountyStatus],
-  );
 
   const filteredSponsorships = useMemo(
     () => sponsorships.filter((sponsorship) => sponsorship.status === bountyStatus),
@@ -46,19 +40,6 @@ export function Bounties(props: RouteComponentProps<RouteParams>) {
   if (status) {
     return (
       <Box py="3">
-        <BountyList
-          header="Bounties"
-          emptyMessage="No bounties available right now"
-          items={filteredBounties}
-          itemProps={(item) => ({
-            url: item.url,
-            title: item.campaign.title,
-            image: item.campaign.boxArtUrl,
-            payout: formatCurrency({ amount: item.amount, currencyCode: "USD" }),
-            details: <BountyDetails status={item.status} date={item.date} />,
-          })}
-        />
-
         <BountyList
           header="Campaigns"
           emptyMessage="No campaigns available right now"

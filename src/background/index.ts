@@ -1,33 +1,18 @@
 import { BountyStatus } from "~/common/constants";
 import { arrayCount, getIconUrl } from "~/common/helpers";
-import { Bounty, Sponsorship, ThirdPartySponsorship } from "~/common/types";
+import { Sponsorship, ThirdPartySponsorship } from "~/common/types";
 
 import { applyMigrations } from "./migrations";
 
-import { bountyModule } from "./modules/bounties";
 import { sponsorshipModule } from "./modules/sponsorships";
 import { webhookModule } from "./modules/webhooks";
 
 async function refresh() {
-  let bounties = new Array<Bounty>();
   let sponsorships = new Array<Sponsorship>();
   let thirdPartySponsorships = new Array<ThirdPartySponsorship>();
 
   let enabled = false;
   let count = 0;
-
-  try {
-    const status = await bountyModule.fetchBountyBoardStatus();
-
-    if (status) {
-      bounties = bounties.concat(await bountyModule.fetchBounties());
-
-      count += arrayCount(bounties, (item) => item.status === BountyStatus.Available);
-      enabled = true;
-    }
-  } catch (error) {
-    console.error("An error occured while fetching bounties", error);
-  }
 
   try {
     const status = await sponsorshipModule.fetchSponsorshipBoardStatus();
@@ -48,7 +33,6 @@ async function refresh() {
 
     thirdPartySponsorships,
     sponsorships,
-    bounties,
   });
 
   browser.action.setBadgeBackgroundColor({
@@ -79,9 +63,6 @@ browser.runtime.onMessage.addListener(async (message) => {
     case "executeTestWebhook":
       return webhookModule.executeTestWebhook(message.data);
 
-    case "openBountyBoard":
-      return bountyModule.openBountyBoard();
-
     case "openSponsorshipBoard":
       return sponsorshipModule.openSponsorshipBoard();
 
@@ -99,22 +80,6 @@ browser.storage.onChanged.addListener(async (changes) => {
       webhooks: [],
     },
   });
-
-  if (changes.bounties) {
-    const { newValue = [], oldValue } = changes.bounties;
-
-    if (oldValue) {
-      const bounties = bountyModule.filterNewBounties(newValue, oldValue);
-
-      if (settings.notifications) {
-        bounties.forEach(bountyModule.createNotification);
-      }
-
-      settings.webhooks.forEach((webhook) => {
-        bounties.forEach((bounty) => webhookModule.executeBountyWebhook(webhook, bounty));
-      });
-    }
-  }
 
   if (changes.sponsorships) {
     const { newValue = [], oldValue } = changes.sponsorships;
@@ -145,9 +110,6 @@ browser.notifications.onClicked.addListener((notificationId) => {
   const [type] = notificationId.split(":");
 
   switch (type) {
-    case "bounty":
-      return bountyModule.openBountyBoard();
-
     case "sponsorship":
       return sponsorshipModule.openSponsorshipBoard();
   }

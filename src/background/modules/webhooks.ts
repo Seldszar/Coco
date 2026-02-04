@@ -1,5 +1,5 @@
 import { WebhookType } from "~/common/constants";
-import { Bounty, Sponsorship, Webhook } from "~/common/types";
+import { Sponsorship, Webhook } from "~/common/types";
 
 import { getLogin } from "../twitch";
 
@@ -26,68 +26,6 @@ class WebhookModule {
       case WebhookType.Slack:
         return {
           text: browser.i18n.getMessage("testWebhook_messageContent", login),
-        };
-    }
-
-    throw new RangeError("Webhook type not supported");
-  }
-
-  async formatBountyWebhook(webhook: Webhook, bounty: Bounty) {
-    const login = await getLogin();
-
-    switch (webhook.type) {
-      case WebhookType.Discord:
-        return {
-          username: browser.i18n.getMessage("extensionName"),
-          avatar_url: "https://github.com/Seldszar/Coco/raw/main/public/icon-purple-96.png",
-          content: browser.i18n.getMessage("twitchBountyWebhook_messageContent", login),
-          embeds: [
-            {
-              title: bounty.campaign.sponsor,
-              description: bounty.campaign.title,
-              url: "https://dashboard.twitch.tv/bounties",
-              color: "11032055",
-              thumbnail: {
-                url: bounty.campaign.boxArtUrl,
-              },
-              footer: {
-                text: browser.i18n.getMessage("extensionName"),
-                icon_url: "https://github.com/Seldszar/Coco/raw/main/public/icon-purple-32.png",
-              },
-            },
-          ],
-        };
-
-      case WebhookType.Slack:
-        return {
-          text: browser.i18n.getMessage("twitchBountyWebhook_messageContent", login),
-          blocks: [
-            {
-              type: "actions",
-              elements: [
-                {
-                  type: "section",
-                  text: {
-                    type: "mrkdwn",
-                    text: `*<https://dashboard.twitch.tv/bounties|${bounty.campaign.sponsor}>*\n${bounty.campaign.title}`,
-                  },
-                  accessory: {
-                    type: "image",
-                    image_url: bounty.campaign.boxArtUrl,
-                    alt_text: bounty.campaign.title,
-                  },
-                },
-                {
-                  type: "button",
-                  url: "https://dashboard.twitch.tv/bounties",
-                  text: {
-                    type: "plain_text",
-                    text: browser.i18n.getMessage("twitchBountyWebhook_buttonLabel"),
-                  },
-                },
-              ],
-            },
-          ],
         };
     }
 
@@ -158,10 +96,6 @@ class WebhookModule {
 
   async executeTestWebhook(webhook: Webhook) {
     return this.executeWebhook(webhook, await this.formatTestWebhook(webhook));
-  }
-
-  async executeBountyWebhook(webhook: Webhook, bounty: Bounty) {
-    return this.executeWebhook(webhook, await this.formatBountyWebhook(webhook, bounty));
   }
 
   async executeSponsorshipWebhook(webhook: Webhook, sponsorship: Sponsorship) {

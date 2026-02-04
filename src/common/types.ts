@@ -5,23 +5,6 @@ export interface Money {
   amount: number;
 }
 
-export interface BountyCampaign {
-  id: string;
-  title: string;
-  sponsor: string;
-  displayName: string;
-  boxArtUrl: string;
-}
-
-export interface Bounty {
-  id: string;
-  date: number;
-  amount: number;
-  status: BountyStatus;
-  campaign: BountyCampaign;
-  url: string;
-}
-
 export interface SponsorshipBrand {
   imageUrl: string;
   name: string;
