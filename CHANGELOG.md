@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.1](https://github.com/Seldszar/Coco/compare/v1.6.0...v1.6.1) (2026-02-17)
+
+
+### Bug Fixes
+
+* requests & cleanup ([59eba5b](https://github.com/Seldszar/Coco/commit/59eba5bce2bb9e4a60b8297ae45a4afe3650245f))
+
 ## [1.6.0](https://github.com/Seldszar/Coco/compare/v1.5.1...v1.6.0) (2026-02-04)
 
 
