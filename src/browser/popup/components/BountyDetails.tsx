@@ -14,7 +14,7 @@ export function BountyDetails(props: BountyDetailsProps) {
     case BountyStatus.Completed:
       return `Completed at ${dateString}`;
 
-    case BountyStatus.Live:
+    case BountyStatus.Active:
       return `Expires at ${dateString}`;
   }
 

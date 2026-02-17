@@ -2,7 +2,7 @@ import { BountyStatus } from "~/common/constants";
 import { formatMoney, getIconUrl } from "~/common/helpers";
 import { Sponsorship, ThirdPartySponsorship } from "~/common/types";
 
-import { getSponsorshipChannelSettings, getSponsorships, getThirdPartySponsorships } from "../twitch";
+import { getCurrentUser, getSponsorshipInstances, getThirdPartySponsorshipOffers } from "../twitch";
 
 class SponsorshipModule {
   async openSponsorshipBoard() {
@@ -19,22 +19,18 @@ class SponsorshipModule {
     return browser.tabs.create({ url: sponsorship.url });
   }
 
-  async fetchSponsorshipBoardStatus() {
-    const [{ data }] = await getSponsorshipChannelSettings();
-
-    if (data == null) {
-      return false;
-    }
+  async fetchSponsorshipPortalAccess() {
+    const [{ data }] = await getCurrentUser();
 
     const {
-      userSponsorshipSettings: { isProfileEligible },
+      currentUser: { roles },
     } = data;
 
-    return isProfileEligible;
+    return roles.isAffiliate || roles.isPartner;
   }
 
   async fetchSponsorships() {
-    const responses = await getSponsorships();
+    const responses = await getSponsorshipInstances();
 
     return responses.flatMap<Sponsorship>(({ data }) => {
       if (data == null) {
@@ -53,7 +49,7 @@ class SponsorshipModule {
             case BountyStatus.Completed:
               return Date.parse(node.activation.endsAt);
 
-            case BountyStatus.Live:
+            case BountyStatus.Active:
               return Date.parse(node.activation.startsAt);
           }
 
@@ -74,7 +70,7 @@ class SponsorshipModule {
   }
 
   async fetchThirdPartySponsorships() {
-    const responses = await getThirdPartySponsorships();
+    const responses = await getThirdPartySponsorshipOffers();
 
     return responses.flatMap<ThirdPartySponsorship>(({ data }) => {
       if (data == null) {
@@ -130,7 +126,8 @@ class SponsorshipModule {
 
       case "ACTIVE":
       case "PAUSED":
-        return BountyStatus.Live;
+      case "PENDING_CREATOR_RESIGN":
+        return BountyStatus.Active;
     }
 
     return BountyStatus.Available;

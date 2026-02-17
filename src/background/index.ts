@@ -15,7 +15,7 @@ async function refresh() {
   let count = 0;
 
   try {
-    const status = await sponsorshipModule.fetchSponsorshipBoardStatus();
+    const status = await sponsorshipModule.fetchSponsorshipPortalAccess();
 
     if (status) {
       sponsorships = sponsorships.concat(await sponsorshipModule.fetchSponsorships());

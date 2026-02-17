@@ -38,7 +38,7 @@ export function getBountyStatus(input: string) {
       return BountyStatus.Completed;
 
     case "live":
-      return BountyStatus.Live;
+      return BountyStatus.Active;
   }
 
   throw new RangeError("Invalid bounty status");

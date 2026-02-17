@@ -1,5 +1,5 @@
-query Coco_ThirdPartySponsorships($first: Int!) {
-  thirdPartySponsorshipOffers(first: $first) {
+query Coco_ThirdPartySponsorshipOffers($first: Int, $after: Cursor) {
+  thirdPartySponsorshipOffers(first: $first, after: $after) {
     edges {
       node {
         brandName

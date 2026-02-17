@@ -1,5 +1,0 @@
-query Coco_SponsorshipChannelSettings($login: String!) {
-  userSponsorshipSettings(input: {userLogin: $login}) {
-    isProfileEligible
-  }
-}

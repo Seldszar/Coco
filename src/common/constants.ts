@@ -5,6 +5,6 @@ export enum WebhookType {
 
 export enum BountyStatus {
   Available = "AVAILABLE",
-  Live = "LIVE",
+  Active = "ACTIVE",
   Completed = "COMPLETED",
 }

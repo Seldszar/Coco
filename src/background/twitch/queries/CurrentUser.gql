@@ -1,0 +1,11 @@
+query Coco_CurrentUser {
+  currentUser {
+    login
+    id
+
+    roles {
+      isAffiliate
+      isPartner
+    }
+  }
+}

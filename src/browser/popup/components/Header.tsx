@@ -100,9 +100,9 @@ export function Header(props: HeaderProps) {
               title: "Available",
             },
             {
-              badgeText: getBadgeCount(BountyStatus.Live),
-              href: "/bounties/live",
-              title: "In Queue",
+              badgeText: getBadgeCount(BountyStatus.Active),
+              href: "/bounties/active",
+              title: "Active",
             },
             {
               href: "/bounties/completed",

@@ -1,5 +1,5 @@
-query Coco_Sponsorships($query: SponsorshipInstanceQuery) {
-  sponsorshipInstances(query: $query) {
+query Coco_SponsorshipInstances($creatorID: ID!, $query: SponsorshipInstanceQuery, $first: Int, $after: Cursor) {
+  sponsorshipInstances(creatorID: $creatorID, query: $query, first: $first, after: $after) {
     edges {
       node {
         id

@@ -1,6 +1,6 @@
 # <img src="public/icon-purple-48.png" width="38" align="left" /> Coco
 
-Coco aims to help Twitch content creators by keeping them up to date with the bounties available on their Bounty Board.
+Coco aims to help Twitch content creators by keeping them up to date with the bounties available on their Sponsorship Portal.
 
 ## Install
 

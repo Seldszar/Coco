@@ -1,7 +1,0 @@
-query Coco_BountyBoardSettings($login: String!) {
-  user(login: $login) {
-    bountyBoardSettings {
-      status
-    }
-  }
-}

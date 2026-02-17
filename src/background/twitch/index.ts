@@ -1,9 +1,8 @@
 import { QueryInput, QueryOperation, QueryResult } from "~/common/types";
 
-import BountyBoardSettings from "./queries/BountyBoardSettings.gql";
-import SponsorshipChannelSettings from "./queries/SponsorshipChannelSettings.gql";
-import Sponsorships from "./queries/Sponsorships.gql";
-import ThirdPartySponsorships from "./queries/ThirdPartySponsorships.gql";
+import CurrentUser from "./queries/CurrentUser.gql";
+import SponsorshipInstances from "./queries/SponsorshipInstances.gql";
+import ThirdPartySponsorshipOffers from "./queries/ThirdPartySponsorshipOffers.gql";
 
 async function getCookieValue(name: string) {
   const cookie = await browser.cookies.get({
@@ -96,74 +95,79 @@ async function query(input: QueryInput[]) {
   );
 }
 
-export function getLogin() {
-  return getCookieValue("login");
-}
-
-export async function getBountyBoardSettings() {
-  const login = await getLogin();
-
-  return query([
+export async function getCurrentUser() {
+  const [{ data }] = await query([
     {
-      ...BountyBoardSettings,
-
-      variables: {
-        login,
-      },
+      ...CurrentUser,
     },
   ]);
+
+  return data.currentUser;
 }
 
-export async function getSponsorshipChannelSettings() {
-  const login = await getLogin();
+export async function getSponsorshipInstances() {
+  const user = await getCurrentUser();
 
   return query([
     {
-      ...SponsorshipChannelSettings,
+      ...SponsorshipInstances,
 
       variables: {
-        login,
-      },
-    },
-  ]);
-}
+        creatorID: user.id,
 
-export async function getSponsorships() {
-  return query([
-    {
-      ...Sponsorships,
-
-      variables: {
         query: {
           stateCategory: "INVITATION",
         },
+
+        first: 5,
       },
     },
     {
-      ...Sponsorships,
+      ...SponsorshipInstances,
 
       variables: {
+        creatorID: user.id,
+
+        query: {
+          stateCategory: "PENDING_OPT_IN",
+        },
+
+        first: 5,
+      },
+    },
+    {
+      ...SponsorshipInstances,
+
+      variables: {
+        creatorID: user.id,
+
         query: {
           stateCategory: "ACTIVE",
         },
+
+        first: 10,
       },
     },
     {
-      ...Sponsorships,
+      ...SponsorshipInstances,
 
       variables: {
+        creatorID: user.id,
+
         query: {
           stateCategory: "COMPLETED",
         },
+
+        first: 10,
       },
     },
   ]);
 }
 
-export async function getThirdPartySponsorships() {
+export async function getThirdPartySponsorshipOffers() {
   return query([
     {
-      ...ThirdPartySponsorships,
+      ...ThirdPartySponsorshipOffers,
 
       variables: {
         first: 100,

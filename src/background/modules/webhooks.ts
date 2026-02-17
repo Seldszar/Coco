@@ -1,7 +1,7 @@
 import { WebhookType } from "~/common/constants";
 import { Sponsorship, Webhook } from "~/common/types";
 
-import { getLogin } from "../twitch";
+import { getCurrentUser } from "../twitch";
 
 class WebhookModule {
   executeWebhook(webhook: Webhook, body: any) {
@@ -13,19 +13,19 @@ class WebhookModule {
   }
 
   async formatTestWebhook(webhook: Webhook) {
-    const login = await getLogin();
+    const user = await getCurrentUser();
 
     switch (webhook.type) {
       case WebhookType.Discord:
         return {
           username: browser.i18n.getMessage("extensionName"),
           avatar_url: "https://github.com/Seldszar/Coco/raw/main/public/icon-purple-96.png",
-          content: browser.i18n.getMessage("testWebhook_messageContent", login),
+          content: browser.i18n.getMessage("testWebhook_messageContent", user.login),
         };
 
       case WebhookType.Slack:
         return {
-          text: browser.i18n.getMessage("testWebhook_messageContent", login),
+          text: browser.i18n.getMessage("testWebhook_messageContent", user.login),
         };
     }
 
@@ -33,14 +33,14 @@ class WebhookModule {
   }
 
   async formatSponsorshipWebhook(webhook: Webhook, sponsorship: Sponsorship) {
-    const login = await getLogin();
+    const user = await getCurrentUser();
 
     switch (webhook.type) {
       case WebhookType.Discord:
         return {
           username: browser.i18n.getMessage("extensionName"),
           avatar_url: "https://github.com/Seldszar/Coco/raw/main/public/icon-purple-96.png",
-          content: browser.i18n.getMessage("twitchCampaignWebhook_messageContent", login),
+          content: browser.i18n.getMessage("twitchCampaignWebhook_messageContent", user.login),
           embeds: [
             {
               title: sponsorship.brand.name,
@@ -60,7 +60,7 @@ class WebhookModule {
 
       case WebhookType.Slack:
         return {
-          text: browser.i18n.getMessage("twitchCampaignWebhook_messageContent", login),
+          text: browser.i18n.getMessage("twitchCampaignWebhook_messageContent", user.login),
           blocks: [
             {
               type: "actions",
