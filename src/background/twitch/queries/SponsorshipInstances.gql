@@ -4,7 +4,6 @@ query Coco_SponsorshipInstances($creatorID: ID!, $query: SponsorshipInstanceQuer
       node {
         id
         state
-        acceptBy
         description
 
         advertiser {
@@ -17,6 +16,8 @@ query Coco_SponsorshipInstances($creatorID: ID!, $query: SponsorshipInstanceQuer
         }
 
         self {
+          acceptBy
+
           paymentActual {
             ...money
           }

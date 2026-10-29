@@ -53,7 +53,7 @@ class SponsorshipModule {
               return Date.parse(node.activation.startsAt);
           }
 
-          return Date.parse(node.acceptBy);
+          return Date.parse(node.self.acceptBy);
         },
 
         get amount() {
