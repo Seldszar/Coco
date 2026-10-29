@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.6.2](https://github.com/Seldszar/Coco/compare/v1.6.1...v1.6.2) (2026-10-29)
+
+
+### Bug Fixes
+
+* sponsorship query ([33353c2](https://github.com/Seldszar/Coco/commit/33353c2c8dbd53efc13fc7bfa514d8dfeb13ebc3))
+
 ## [1.6.1](https://github.com/Seldszar/Coco/compare/v1.6.0...v1.6.1) (2026-02-17)
 
 
