@@ -7,4 +7,5 @@ export enum BountyStatus {
   Available = "AVAILABLE",
   Active = "ACTIVE",
   Completed = "COMPLETED",
+  Rejected = "REJECTED",
 }

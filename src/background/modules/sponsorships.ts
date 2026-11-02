@@ -33,37 +33,30 @@ class SponsorshipModule {
     const responses = await getSponsorshipInstances();
 
     return responses.flatMap<Sponsorship>(({ data }) => {
-      if (data == null) {
+      if (data.sponsorshipInstances == null) {
         return [];
       }
 
       return data.sponsorshipInstances.edges.map(({ node }) => ({
         id: node.id,
         description: node.description,
+        campaignId: node.campaignID,
 
         status: this.formatSponsorshipStatus(node.state),
         brand: this.formatBrand(node.advertiser),
 
         get date() {
-          switch (this.status) {
-            case BountyStatus.Completed:
-              return Date.parse(node.activation.endsAt);
-
-            case BountyStatus.Active:
-              return Date.parse(node.activation.startsAt);
-          }
-
-          return Date.parse(node.self.acceptBy);
+          return Date.parse(node.endsAt);
         },
 
         get amount() {
           return formatMoney(
-            this.status === BountyStatus.Completed ? node.self.paymentActual : node.self.paymentPotential,
+            this.status === BountyStatus.Completed ? node.self.paymentActual : node.self.paymentMaximum,
           );
         },
 
         get url() {
-          return `https://dashboard.twitch.tv/monetization/sponsorships/details/${this.id}`;
+          return `https://dashboard.twitch.tv/monetization/sponsorships/details/${this.id.replace("campaignInstance.", "")}`;
         },
       }));
     });
@@ -73,7 +66,7 @@ class SponsorshipModule {
     const responses = await getThirdPartySponsorshipOffers();
 
     return responses.flatMap<ThirdPartySponsorship>(({ data }) => {
-      if (data == null) {
+      if (data.thirdPartySponsorshipOffers == null) {
         return [];
       }
 
@@ -105,7 +98,9 @@ class SponsorshipModule {
   filterNewSponsorships(newSponsorships: Sponsorship[], oldSponsorships: Sponsorship[]) {
     return newSponsorships
       .filter((newSponsorship) => newSponsorship.status === BountyStatus.Available)
-      .filter((newSponsorship) => oldSponsorships.every((oldSponsorship) => newSponsorship.id !== oldSponsorship.id));
+      .filter((newSponsorship) =>
+        oldSponsorships.every((oldSponsorship) => newSponsorship.campaignId !== oldSponsorship.campaignId),
+      );
   }
 
   formatBrand(advertiser: any) {
@@ -128,6 +123,9 @@ class SponsorshipModule {
       case "PAUSED":
       case "PENDING_CREATOR_RESIGN":
         return BountyStatus.Active;
+
+      case "FAUX":
+        return BountyStatus.Rejected;
     }
 
     return BountyStatus.Available;

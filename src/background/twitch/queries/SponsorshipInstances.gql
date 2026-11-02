@@ -5,6 +5,8 @@ query Coco_SponsorshipInstances($creatorID: ID!, $query: SponsorshipInstanceQuer
         id
         state
         description
+        campaignID
+        endsAt
 
         advertiser {
           name
@@ -22,7 +24,7 @@ query Coco_SponsorshipInstances($creatorID: ID!, $query: SponsorshipInstanceQuer
             ...money
           }
 
-          paymentPotential {
+          paymentMaximum {
             ...money
           }
         }

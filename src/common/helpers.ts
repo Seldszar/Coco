@@ -37,7 +37,7 @@ export function getBountyStatus(input: string) {
     case "completed":
       return BountyStatus.Completed;
 
-    case "live":
+    case "active":
       return BountyStatus.Active;
   }
 

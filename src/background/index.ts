@@ -8,6 +8,10 @@ import { sponsorshipModule } from "./modules/sponsorships";
 import { webhookModule } from "./modules/webhooks";
 
 async function refresh() {
+  browser.alarms.create("refresh", {
+    delayInMinutes: 1,
+  });
+
   let sponsorships = new Array<Sponsorship>();
   let thirdPartySponsorships = new Array<ThirdPartySponsorship>();
 
@@ -50,11 +54,6 @@ async function refresh() {
       16: getIconUrl(color, 16),
       32: getIconUrl(color, 32),
     },
-  });
-
-  browser.alarms.clearAll();
-  browser.alarms.create("refresh", {
-    delayInMinutes: 1,
   });
 }
 

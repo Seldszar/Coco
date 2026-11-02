@@ -12,6 +12,7 @@ export interface SponsorshipBrand {
 
 export interface Sponsorship {
   id: string;
+  campaignId: string;
   date: number;
   description: string;
   status: BountyStatus;

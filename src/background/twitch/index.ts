@@ -106,14 +106,18 @@ export async function getCurrentUser() {
 }
 
 export async function getSponsorshipInstances() {
-  const user = await getCurrentUser();
+  const [{ data }] = await getCurrentUser();
+
+  const {
+    currentUser: { id },
+  } = data;
 
   return query([
     {
       ...SponsorshipInstances,
 
       variables: {
-        creatorID: user.id,
+        creatorID: id,
 
         query: {
           stateCategory: "INVITATION",
@@ -126,7 +130,7 @@ export async function getSponsorshipInstances() {
       ...SponsorshipInstances,
 
       variables: {
-        creatorID: user.id,
+        creatorID: id,
 
         query: {
           stateCategory: "PENDING_OPT_IN",
@@ -139,7 +143,7 @@ export async function getSponsorshipInstances() {
       ...SponsorshipInstances,
 
       variables: {
-        creatorID: user.id,
+        creatorID: id,
 
         query: {
           stateCategory: "ACTIVE",
@@ -152,7 +156,7 @@ export async function getSponsorshipInstances() {
       ...SponsorshipInstances,
 
       variables: {
-        creatorID: user.id,
+        creatorID: id,
 
         query: {
           stateCategory: "COMPLETED",
