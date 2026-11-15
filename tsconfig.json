@@ -10,9 +10,8 @@
     "skipLibCheck": true,
     "jsxImportSource": "react",
     "jsx": "react-jsx",
-    "baseUrl": ".",
     "paths": {
-      "~/*": ["src/*"]
+      "~/*": ["./src/*"]
     }
   },
   "exclude": ["node_modules"]

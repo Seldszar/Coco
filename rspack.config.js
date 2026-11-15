@@ -38,6 +38,9 @@ module.exports = (env, argv) => {
           use: {
             loader: "builtin:swc-loader",
             options: {
+              env: {
+                targets: ["defaults"],
+              },
               jsc: {
                 parser: {
                   syntax: "typescript",
