@@ -3,6 +3,7 @@ import { arrayCount, getIconUrl } from "~/common/helpers";
 import { Sponsorship, ThirdPartySponsorship } from "~/common/types";
 
 import { applyMigrations } from "./migrations";
+import { refreshUser } from "./twitch";
 
 import { sponsorshipModule } from "./modules/sponsorships";
 import { webhookModule } from "./modules/webhooks";
@@ -19,9 +20,9 @@ async function refresh() {
   let count = 0;
 
   try {
-    const status = await sponsorshipModule.fetchSponsorshipPortalAccess();
+    await refreshUser();
 
-    if (status) {
+    if (await sponsorshipModule.fetchSponsorshipPortalAccess()) {
       sponsorships = sponsorships.concat(await sponsorshipModule.fetchSponsorships());
       thirdPartySponsorships = thirdPartySponsorships.concat(await sponsorshipModule.fetchThirdPartySponsorships());
 
@@ -29,7 +30,7 @@ async function refresh() {
       enabled = true;
     }
   } catch (error) {
-    console.error("An error occured while fetching sponsorships", error);
+    console.error("An error occured while refreshing", error);
   }
 
   browser.storage.session.set({
@@ -97,12 +98,9 @@ browser.storage.onChanged.addListener(async (changes) => {
   }
 });
 
-browser.runtime.onInstalled.addListener(async () => {
-  await applyMigrations();
-  await refresh();
-});
-
+browser.runtime.onInstalled.addListener(applyMigrations);
 browser.runtime.onStartup.addListener(refresh);
+
 browser.alarms.onAlarm.addListener(refresh);
 
 browser.notifications.onClicked.addListener((notificationId) => {

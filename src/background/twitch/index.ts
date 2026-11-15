@@ -95,7 +95,7 @@ async function query(input: QueryInput[]) {
   );
 }
 
-export async function getUser() {
+export async function refreshUser() {
   const { settings } = await browser.storage.local.get({
     settings: {
       channelLogin: "",
@@ -112,7 +112,17 @@ export async function getUser() {
     },
   ]);
 
-  return data.user;
+  await browser.storage.session.set({
+    user: data.user,
+  });
+}
+
+export async function getUser() {
+  const { user } = await browser.storage.session.get({
+    user: null,
+  });
+
+  return user;
 }
 
 export async function getSponsorshipInstances() {

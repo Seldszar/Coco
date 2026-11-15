@@ -1,5 +1,14 @@
 import { BountyStatus, WebhookType } from "./constants";
 
+export interface User {
+  id: string;
+  login: string;
+  roles: {
+    isAffiliate: boolean;
+    isPartner: boolean;
+  };
+}
+
 export interface Money {
   currencyCode: string;
   amount: number;
