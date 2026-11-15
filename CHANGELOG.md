@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.1](https://github.com/Seldszar/Coco/compare/v1.7.0...v1.7.1) (2026-11-15)
+
+
+### Bug Fixes
+
+* render error ([a4a8c8d](https://github.com/Seldszar/Coco/commit/a4a8c8d8400e81aa40f5a2f0d93e3a5afb8f258e))
+* user caching & refresh ([03032aa](https://github.com/Seldszar/Coco/commit/03032aa1de08939dd3ccea56e675ce86e298227d))
+
 ## [1.7.0](https://github.com/Seldszar/Coco/compare/v1.6.3...v1.7.0) (2026-11-15)
 
 
