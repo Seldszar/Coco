@@ -35,6 +35,13 @@ export interface Webhook {
   url: string;
 }
 
+export interface Settings {
+  webhooks: Webhook[];
+  notifications: boolean;
+  channelLogin: string;
+  theme: string;
+}
+
 export interface QueryInput {
   operationName?: string;
   query?: string;

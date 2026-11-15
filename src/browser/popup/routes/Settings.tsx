@@ -2,6 +2,7 @@ import { useSettings } from "~/browser/common/hooks";
 import { Box } from "~/browser/styled-system/jsx";
 
 import { FormField } from "../components/FormField";
+import { Input } from "../components/Input";
 import { Section } from "../components/Section";
 import { Select } from "../components/Select";
 import { Switch } from "../components/Switch";
@@ -32,6 +33,16 @@ export function Settings() {
         >
           Enable Notifications
         </Switch>
+      </Section>
+
+      <Section header="Channel">
+        <FormField label="Login">
+          <Input
+            value={settings.channelLogin}
+            onChange={(event) => updateSettings((value) => ({ ...value, channelLogin: event.currentTarget.value }))}
+            placeholder="Leave empty for current user"
+          />
+        </FormField>
       </Section>
 
       <Section header="Webhooks">

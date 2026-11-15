@@ -2,7 +2,7 @@ import { BountyStatus } from "~/common/constants";
 import { formatMoney, getIconUrl } from "~/common/helpers";
 import { Sponsorship, ThirdPartySponsorship } from "~/common/types";
 
-import { getCurrentUser, getSponsorshipInstances, getThirdPartySponsorshipOffers } from "../twitch";
+import { getSponsorshipInstances, getThirdPartySponsorshipOffers, getUser } from "../twitch";
 
 class SponsorshipModule {
   async openSponsorshipBoard() {
@@ -20,13 +20,9 @@ class SponsorshipModule {
   }
 
   async fetchSponsorshipPortalAccess() {
-    const [{ data }] = await getCurrentUser();
+    const user = await getUser();
 
-    const {
-      currentUser: { roles },
-    } = data;
-
-    return roles.isAffiliate || roles.isPartner;
+    return user.roles.isAffiliate || user.roles.isPartner;
   }
 
   async fetchSponsorships() {

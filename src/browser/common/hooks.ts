@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { Storage } from "webextension-polyfill";
 import { useSearch } from "wouter";
 
-import { Sponsorship, ThirdPartySponsorship, Webhook } from "~/common/types";
+import { Settings, Sponsorship, ThirdPartySponsorship, Webhook } from "~/common/types";
 
 export function useSearchParams() {
   const search = useSearch();
@@ -56,9 +56,10 @@ export function useStorage<T>(areaName: "local" | "session", key: string, defaul
 }
 
 export function useSettings() {
-  return useStorage("local", "settings", {
+  return useStorage<Settings>("local", "settings", {
     webhooks: new Array<Webhook>(),
     notifications: false,
+    channelLogin: "",
     theme: "light",
   });
 }

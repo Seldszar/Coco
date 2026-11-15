@@ -1,7 +1,7 @@
 import { WebhookType } from "~/common/constants";
 import { Sponsorship, Webhook } from "~/common/types";
 
-import { getCurrentUser } from "../twitch";
+import { getUser } from "../twitch";
 
 class WebhookModule {
   executeWebhook(webhook: Webhook, body: any) {
@@ -13,7 +13,7 @@ class WebhookModule {
   }
 
   async formatTestWebhook(webhook: Webhook) {
-    const user = await getCurrentUser();
+    const user = await getUser();
 
     switch (webhook.type) {
       case WebhookType.Discord:
@@ -33,7 +33,7 @@ class WebhookModule {
   }
 
   async formatSponsorshipWebhook(webhook: Webhook, sponsorship: Sponsorship) {
-    const user = await getCurrentUser();
+    const user = await getUser();
 
     switch (webhook.type) {
       case WebhookType.Discord:

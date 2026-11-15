@@ -1,5 +1,5 @@
-query Coco_CurrentUser {
-  currentUser {
+query User($channelLogin: String) {
+  user(login: $channelLogin) {
     login
     id
 

@@ -1,8 +1,8 @@
 import { QueryInput, QueryOperation, QueryResult } from "~/common/types";
 
-import CurrentUser from "./queries/CurrentUser.gql";
 import SponsorshipInstances from "./queries/SponsorshipInstances.gql";
 import ThirdPartySponsorshipOffers from "./queries/ThirdPartySponsorshipOffers.gql";
+import User from "./queries/User.gql";
 
 async function getCookieValue(name: string) {
   const cookie = await browser.cookies.get({
@@ -95,29 +95,35 @@ async function query(input: QueryInput[]) {
   );
 }
 
-export async function getCurrentUser() {
+export async function getUser() {
+  const { settings } = await browser.storage.local.get({
+    settings: {
+      channelLogin: "",
+    },
+  });
+
   const [{ data }] = await query([
     {
-      ...CurrentUser,
+      ...User,
+
+      variables: {
+        channelLogin: settings.channelLogin || undefined,
+      },
     },
   ]);
 
-  return data.currentUser;
+  return data.user;
 }
 
 export async function getSponsorshipInstances() {
-  const [{ data }] = await getCurrentUser();
-
-  const {
-    currentUser: { id },
-  } = data;
+  const user = await getUser();
 
   return query([
     {
       ...SponsorshipInstances,
 
       variables: {
-        creatorID: id,
+        creatorID: user.id,
 
         query: {
           stateCategory: "INVITATION",
@@ -130,7 +136,7 @@ export async function getSponsorshipInstances() {
       ...SponsorshipInstances,
 
       variables: {
-        creatorID: id,
+        creatorID: user.id,
 
         query: {
           stateCategory: "PENDING_OPT_IN",
@@ -143,7 +149,7 @@ export async function getSponsorshipInstances() {
       ...SponsorshipInstances,
 
       variables: {
-        creatorID: id,
+        creatorID: user.id,
 
         query: {
           stateCategory: "ACTIVE",
@@ -156,7 +162,7 @@ export async function getSponsorshipInstances() {
       ...SponsorshipInstances,
 
       variables: {
-        creatorID: id,
+        creatorID: user.id,
 
         query: {
           stateCategory: "COMPLETED",
@@ -169,11 +175,14 @@ export async function getSponsorshipInstances() {
 }
 
 export async function getThirdPartySponsorshipOffers() {
+  const user = await getUser();
+
   return query([
     {
       ...ThirdPartySponsorshipOffers,
 
       variables: {
+        creatorID: user.id,
         first: 100,
       },
     },
