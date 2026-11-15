@@ -51,9 +51,9 @@ const recipe = sva({
 export interface BountyCardProps {
   url: string;
   title: string;
-  payout: string;
   image: string;
 
+  payout?: string;
   details?: ReactNode;
 }
 
@@ -70,7 +70,7 @@ export function BountyCard(props: BountyCardProps) {
             {props.title}
           </h3>
 
-          <strong className={classes.payout}>{props.payout}</strong>
+          {props.payout && <strong className={classes.payout}>{props.payout}</strong>}
         </Flex>
 
         <p className={classes.details}>{props.details}</p>

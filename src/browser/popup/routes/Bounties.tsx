@@ -48,7 +48,7 @@ export function Bounties(props: RouteComponentProps<RouteParams>) {
 
             title: item.brand.name,
             image: item.brand.imageUrl,
-            payout: formatCurrency(item.amount),
+            payout: item.amount && formatCurrency(item.amount),
             details: <BountyDetails status={item.status} date={item.date} />,
           })}
         />
@@ -62,7 +62,7 @@ export function Bounties(props: RouteComponentProps<RouteParams>) {
               url: item.url,
               title: item.brand.name,
               image: item.brand.imageUrl,
-              payout: formatCurrency(item.baseAmount),
+              payout: item.baseAmount && formatCurrency(item.baseAmount),
               details: item.conversionAmount.amount > 0 && (
                 <>
                   with <strong>~{formatCurrency(item.conversionAmount)}</strong> per new user
