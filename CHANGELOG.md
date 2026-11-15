@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.7.0](https://github.com/Seldszar/Coco/compare/v1.6.3...v1.7.0) (2026-11-15)
+
+
+### Features
+
+* custom channel support ([3bf697d](https://github.com/Seldszar/Coco/commit/3bf697d1ab228ea4ee285466350c5cdfd4da518f))
+
+
+### Bug Fixes
+
+* update layout ([34830c8](https://github.com/Seldszar/Coco/commit/34830c8d2f591adf87b05c9bbec79879c73be194))
+
 ## [1.6.3](https://github.com/Seldszar/Coco/compare/v1.6.2...v1.6.3) (2026-11-02)
 
 
