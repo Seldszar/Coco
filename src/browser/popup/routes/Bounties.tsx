@@ -41,8 +41,7 @@ export function Bounties(props: RouteComponentProps<RouteParams>) {
     return (
       <Box py="3">
         <BountyList
-          header="Campaigns"
-          emptyMessage="No campaigns available right now"
+          emptyMessage="No sponsorships available right now"
           items={filteredSponsorships}
           itemProps={(item) => ({
             url: item.url,
@@ -56,15 +55,15 @@ export function Bounties(props: RouteComponentProps<RouteParams>) {
 
         {bountyStatus === BountyStatus.Available && (
           <BountyList
-            header="StreamElements Campaigns"
-            emptyMessage="No StreamElements campaigns available right now"
+            header="Third Party Sponsorships"
+            emptyMessage="No third party sponsorships available right now"
             items={thirdPartySponsorships}
             itemProps={(item) => ({
               url: item.url,
               title: item.brand.name,
               image: item.brand.imageUrl,
               payout: formatCurrency(item.baseAmount),
-              details: (
+              details: item.conversionAmount.amount > 0 && (
                 <>
                   with <strong>~{formatCurrency(item.conversionAmount)}</strong> per new user
                 </>
