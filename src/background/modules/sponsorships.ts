@@ -10,9 +10,11 @@ class SponsorshipModule {
       url: "*://dashboard.twitch.tv/*/monetization/sponsorships*",
     });
 
+    const user = await getUser();
+
     return tab
       ? browser.tabs.update(tab.id, { active: true })
-      : browser.tabs.create({ url: "https://dashboard.twitch.tv/monetization/sponsorships" });
+      : browser.tabs.create({ url: `https://dashboard.twitch.tv/u/${user.login}/monetization/sponsorships` });
   }
 
   openSponsorshipPage(sponsorship: Sponsorship) {
