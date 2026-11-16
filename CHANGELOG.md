@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.7.2](https://github.com/Seldszar/Coco/compare/v1.7.1...v1.7.2) (2026-11-16)
+
+
+### Bug Fixes
+
+* sponsorship board link ([701bd89](https://github.com/Seldszar/Coco/commit/701bd8967e282c77e4e63e99099d9bb921860e2b))
+
 ## [1.7.1](https://github.com/Seldszar/Coco/compare/v1.7.0...v1.7.1) (2026-11-15)
 
 
