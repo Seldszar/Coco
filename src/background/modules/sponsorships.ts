@@ -110,23 +110,25 @@ class SponsorshipModule {
 
   formatSponsorshipStatus(input: string) {
     switch (input) {
-      case "COMPLETED":
-      case "COMPLETE_PAID":
-      case "CREATOR_FINISHED":
-      case "PENDING_MODERATION":
-      case "PENDING_PAYOUT":
-        return BountyStatus.Completed;
+      case "PENDING_CREATOR_APPROVAL":
+        return BountyStatus.Available;
 
       case "ACTIVE":
       case "PAUSED":
       case "PENDING_CREATOR_RESIGN":
         return BountyStatus.Active;
 
-      case "FAUX":
-        return BountyStatus.Rejected;
+      case "COMPLETED":
+      case "COMPLETE_PAID":
+      case "CREATOR_FINISHED":
+      case "PENDING_MODERATION":
+      case "PENDING_PAYOUT":
+      case "PENDING_AUDIT":
+      case "PENDING_PERFORMANCE_CALCULATION":
+        return BountyStatus.Completed;
     }
 
-    return BountyStatus.Available;
+    return BountyStatus.None;
   }
 }
 

@@ -4,8 +4,8 @@ export enum WebhookType {
 }
 
 export enum BountyStatus {
+  None = "NONE",
   Available = "AVAILABLE",
   Active = "ACTIVE",
   Completed = "COMPLETED",
-  Rejected = "REJECTED",
 }
